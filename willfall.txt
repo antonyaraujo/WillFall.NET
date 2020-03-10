@@ -1,0 +1,10 @@
+A,true,B,7
+A,true,C,17
+B,true,A,11
+B,true,C,11
+B,true,E,8
+B,true,D,15
+D,true,B,15
+E,true,B,8
+E,true,I,6
+I,true,E,6
