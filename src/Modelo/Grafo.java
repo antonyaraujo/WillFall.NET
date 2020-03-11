@@ -50,20 +50,21 @@ public class Grafo {
         }
     }
     
-    public void adicionarVertice(String nome, int x, int y){
+    public void adicionarVertice(String nome, boolean terminal, int x, int y){
         if(buscarVertice(nome) == null){
-            vertices.add(new Vertice(nome, x, y));        
+            vertices.add(new Vertice(nome, terminal, x, y));        
             System.out.println("Adicionou");
         }
     }
     
-    public void adicionarAresta(String origem, String destino, double peso){
+    public void adicionarAresta(String origem, String destino, boolean terminal,  double peso){
         adicionarVertice(origem);
         adicionarVertice(destino);
         Vertice Origem = buscarVertice(origem);
+        Origem.setTerminal(terminal);
         Vertice Destino = buscarVertice(destino);        
                 
-        Aresta aresta = new Aresta(Origem, Destino, peso);
+        Aresta aresta = new Aresta(Origem, Destino, terminal, peso);
         Origem.addVizinho(aresta);
         //Destino.addVizinho(aresta);
         arestas.add(aresta);
@@ -103,6 +104,17 @@ public class Grafo {
 
         Collections.reverse(path);
         return path;
+    }
+    
+    public ArrayList<List<Vertice>> matrizMelhorCaminho(Vertice vertice){
+        computePath(vertice);
+        ArrayList<List<Vertice>> caminhos = new ArrayList<List<Vertice>>();
+        for(Vertice v : vertices){
+            if(!v.getNome().equals(vertice.getNome())){
+                caminhos.add(getShortestPathTo(v));
+            }
+        }
+        return caminhos;
     }
     
     private ArrayList<Integer> buscarArestas(String nome)

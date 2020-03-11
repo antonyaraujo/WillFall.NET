@@ -11,30 +11,43 @@ import Modelo.Vertice;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.*;
 
 /**
  *
  * @author antony
  */
-public class desenhoGrafo extends javax.swing.JPanel {
+    public class desenhoGrafo extends javax.swing.JPanel {
 
     private int x_novoVertice;
     private int y_novoVertice;
+    private boolean clickNoGrafo;
     private Grafo grafo;
     JPopupMenu popMenu = new JPopupMenu();
+    JPopupMenu popMenuTerminal = new JPopupMenu();
     JMenuItem addVertexMenuItem = new JMenuItem("Adicionar vértice");
     JMenuItem addEdgeMenuItem = new JMenuItem("Adicionar aresta");
     JTable tableAdjMatrix;
     JScrollPane scrollPane;
     JButton adjMatrixButton;
-    JButton eulerianidade;
+    JButton adicionarVertice;
     JLabel grafoLabel;
+    boolean hasclicked1=false;
+    JLabel click1label=null;
+    ObjectObserver resposta;
+    boolean click;
+    JMenuItem caminhos;
     /**
      * Creates new form desenhoGrafo
      */
@@ -57,25 +70,144 @@ public class desenhoGrafo extends javax.swing.JPanel {
         popMenu.add(addEdgeMenuItem);
         add(popMenu);
         popUpMenu();
-        
-        eulerianidade = new JButton("Conferir Eulerianidade do Grafo");
-        add(eulerianidade);
-        eulerianidade.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //euleriano();
-            }
-        });  
+        caminhos = new JMenuItem("Ver melhores caminhos");
+        popMenuTerminal.add(caminhos);
+        clickNoGrafo = false;
         initComponents();
-        setVisible(true);
+        setVisible(true);   
+        resposta = new ObjectObserver();
     }
     
     public Grafo getGrafo(){
         return grafo;
+    }       
+    
+        public class ObjectObserver implements Observer {
+
+            private Object objeto;
+
+            public ObjectObserver() {
+                objeto = null;
+            }            
+            
+            public Object getObjeto(){
+                return objeto;
+            }
+
+            @Override
+            public void update(Observable obj, Object arg) {
+                if (arg instanceof Object) {
+                    objeto = (Object) arg;                                    
+                }
+            }
+        }
+    
+        public Observer getResposta(){
+            return resposta;
+        }
+        
+    public void adicionarEquipamentoMouse(){        
+        clickNoGrafo = true;                                
+        addMouseListener(new MouseAdapter() 
+        {            
+            public void mouseClicked(MouseEvent e)
+            {                
+                if(clickNoGrafo){                    
+                    x_novoVertice = e.getX();
+                    y_novoVertice = e.getY();                    
+                    String nomeEquipamento =JOptionPane.showInputDialog(null, "Digite o rótulo do vértice", "Rótulo", 1).toUpperCase();                                    
+                    if (resposta.getObjeto().equals("Roteador")){                        
+                        grafo.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);                                      
+                    }
+                    else if (resposta.getObjeto().equals("Computador")){
+                        grafo.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);                                                             
+                    }
+                    
+                    adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));                                        
+                    clickNoGrafo = false;                    
+                }                
+            }                        
+        });  
+
+    } 
+    
+    private void adicionarEquipamento(Vertice equipamento){
+        JButton bt_equipamento = new JButton(); 
+        this.add(bt_equipamento);        
+        bt_equipamento.setLocation(equipamento.getX(), equipamento.getY());
+        bt_equipamento.setSize(50, 50);        
+        ImageIcon img, selecionado;        
+        if(!equipamento.isTerminal()){
+            img = new ImageIcon("imagens/roteador.png");
+            selecionado = new ImageIcon("imagens/roteador2.png");
+            bt_equipamento.setIcon(new ImageIcon(img.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));
+            bt_equipamento.setSelectedIcon(new ImageIcon(selecionado.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));            
+        }
+        else{
+            img = new ImageIcon("imagens/terminal.png");
+            bt_equipamento.setIcon(new ImageIcon(img.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));            
+        }   
+        
+        bt_equipamento.setVisible(true);
+        bt_equipamento.setOpaque(false);
+        bt_equipamento.setContentAreaFilled(false);
+        bt_equipamento.setBorder(null);               
+        JLabel rotulo = new JLabel(equipamento.getNome());
+        rotulo.setLocation(bt_equipamento.getX()+15, bt_equipamento.getY()+50);
+        rotulo.setSize(100, 10);        
+        rotulo.setVisible(true);            
+        this.add(rotulo);           
+        this.repaint();        
+        popMenuEquipamento(equipamento, bt_equipamento);        
+        this.initComponents();        
+    }
+    
+    private void popMenuEquipamento(Vertice equipamento, JButton bt)
+    {
+        click = true;
+        bt.addMouseListener(new MouseAdapter() 
+        {
+            public void mouseClicked(MouseEvent e)
+            {
+                if (e.getButton() == MouseEvent.BUTTON3 && click){                                
+                    popMenuTerminal.show(e.getComponent(), e.getX(), e.getY());  
+                    bt.setSelected(true);
+                }
+                click = false;
+                bt.setSelected(false);
+            }
+            
+        });        
+                        
+       caminhos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {               
+                String[] colunas = new String[grafo.getNumVertices()];
+                for(int i = 0; i < grafo.getNumVertices(); i++){
+                    colunas[i] = grafo.getVertices().get(i).getNome();
+                }
+                Object[][] dados = new Object[grafo.getNumVertices()][grafo.getNumVertices()];
+                ArrayList<List<Vertice>> lista = grafo.matrizMelhorCaminho(equipamento);
+                for(int j = 0; j < lista.size(); j++){
+                    for(int i = 0; i < lista.get(j).size(); i++){
+                        dados[i][j] = lista.get(j).get(i).getNome();
+                    }
+                        
+                }
+                JTable tabela = new JTable(dados, colunas);                
+                JScrollPane barraRolagem = new JScrollPane(tabela);                
+                tabela.setVisible(true);
+                barraRolagem.setVisible(true);                
+                
+            }
+               
+        });               
+        
+        
     }
     
     private void popUpMenu()
-    {
+    {        
         addMouseListener(new MouseAdapter() 
         {
             public void mouseClicked(MouseEvent e)
@@ -85,9 +217,11 @@ public class desenhoGrafo extends javax.swing.JPanel {
                     popMenu.show(e.getComponent(), e.getX(), e.getY());
                     x_novoVertice = e.getX();
                     y_novoVertice = e.getY();
-                }
+                }                                
             }
+                        
         });
+                
         
         addVertexMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -95,19 +229,24 @@ public class desenhoGrafo extends javax.swing.JPanel {
                 String label = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do vértice", "Rótulo", 1).toUpperCase();
                 if (label==null)
                     return;
-                grafo.adicionarVertice(label, x_novoVertice, y_novoVertice);
+                grafo.adicionarVertice(label, false, x_novoVertice, y_novoVertice);
                 grafoLabel.setText("GRAFO COM " + grafo.getNumVertices() + " VÉRTICES");
                 repaint();
             }
                
         });
+        
         addEdgeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nome1 = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do primeiro vértice", "Rótulo", 1).toUpperCase();
                 String nome2 = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do segundo vértice", "Rótulo", 1).toUpperCase();
-                int peso = Integer.parseInt(JOptionPane.showInputDialog(popMenu,"Digite o peso","Peso", 1).toUpperCase());
-                grafo.adicionarAresta(nome1, nome2, peso);
+                int peso = Integer.parseInt(JOptionPane.showInputDialog(popMenu,"Digite o peso","Peso", 1).toUpperCase());                
+                int terminal = JOptionPane.showConfirmDialog(null, "Terminal", "Cancelar", JOptionPane.YES_NO_OPTION);
+                if(terminal == JOptionPane.YES_OPTION)
+                    grafo.adicionarAresta(nome1, nome2, true, peso);
+                else
+                    grafo.adicionarAresta(nome1, nome2, false, peso);
                 repaint();
             }
         });
@@ -126,27 +265,18 @@ public class desenhoGrafo extends javax.swing.JPanel {
     {
         for (int i = 0; i < grafo.getNumVertices(); i++)
         {
-            g.setColor(Color.BLACK);
-            g.fillOval(grafo.getVertice(i).getX(), grafo.getVertice(i).getY(), 40, 40);
-            g.setColor(Color.WHITE);
-            g.drawString(grafo.getVertice(i).getNome(), grafo.getVertice(i).getX()+17, grafo.getVertice(i).getY()+23);
-            g.setColor(Color.BLACK);
+            Vertice v = grafo.getVertices().get(i);            
+            adicionarEquipamento(v);                            
         }
         
         ArrayList<Aresta> arestas = grafo.getArestas();
         for (int i =0; i <  arestas.size(); i++){                                        
-                    g.drawLine(arestas.get(i).getOrigem().getX() +10, arestas.get(i).getOrigem().getY() +10, 
-                            arestas.get(i).getDestino().getX() +10,
-                            arestas.get(i).getDestino().getY() + 10);           
+                    g.drawLine(arestas.get(i).getOrigem().getX()+15, arestas.get(i).getOrigem().getY()+20, 
+                            arestas.get(i).getDestino().getX()+15,
+                            arestas.get(i).getDestino().getY()+20);           
                      g.drawString(String.valueOf(arestas.get(i).getPeso()), (arestas.get(i).getDestino().getX()+arestas.get(i).getOrigem().getX())/2, (arestas.get(i).getOrigem().getY()+arestas.get(i).getDestino().getY())/2);
         }
-    }
-        
-    /*@Override
-    public Dimension getPreferredSize()
-    {
-     return new Dimension(1200, 680);
-    }*/
+    }      
     
     public void adjMatrix()
     {        
@@ -180,47 +310,7 @@ public class desenhoGrafo extends javax.swing.JPanel {
         mAdjFrame.setSize(360,360);
         mAdjFrame.setVisible(true);
         
-    }
-    
-        private void buildGraph7()
-    {
-  
-        grafo.adicionarVertice("A", 200, 350);
-        grafo.adicionarVertice("B", 480, 224);
-        grafo.adicionarVertice("C", 870, 224);
-        grafo.adicionarVertice("D", 1120, 350);
-        grafo.adicionarVertice("E", 870, 530);
-        grafo.adicionarVertice("F", 480, 530);
-        grafo.adicionarVertice("G", 675, 350);
-        
-        grafo.adicionarAresta("A", "B", 5);
-        grafo.adicionarAresta("A", "F", 5);
-        grafo.adicionarAresta("B", "C", 5);
-        grafo.adicionarAresta("B", "F", 5);
-        grafo.adicionarAresta("B", "G", 5);
-        grafo.adicionarAresta("C", "D", 5);
-        grafo.adicionarAresta("C", "E", 5);
-        grafo.adicionarAresta("C", "G", 5);
-        grafo.adicionarAresta("D", "E", 5);
-        grafo.adicionarAresta("E", "F", 5);
-        grafo.adicionarAresta("E", "G", 5);
-        grafo.adicionarAresta("F", "G", 5);
-    }
-    
-    
-    private void buildGraph4()
-    {
-        grafo.adicionarVertice("A", 500, 180);
-        grafo.adicionarVertice("B", 800, 180);
-        grafo.adicionarVertice("C", 800, 480);
-        grafo.adicionarVertice("D", 500, 480);
-        
-        grafo.adicionarAresta("A", "B", 5);
-        grafo.adicionarAresta("A", "D", 5);
-        grafo.adicionarAresta("B", "C", 5);
-        grafo.adicionarAresta("C", "D", 5);
- 
-    }
+    }       
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -246,7 +336,6 @@ public class desenhoGrafo extends javax.swing.JPanel {
 
         getAccessibleContext().setAccessibleName("Visualização da Rede - WillFall.NET");
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

@@ -14,17 +14,19 @@ public class Vertice implements Comparable<Vertice>{
     private Vertice anterior;    
     private double distanciaMinima = Double.MAX_VALUE;
     private int x, y;
+    private boolean terminal;
 
     public Vertice(String name) {
         this.nome = name;
         this.arestas = new ArrayList<>();
     }
     
-    public Vertice(String name, int x, int y) {
+    public Vertice(String name, boolean terminal, int x, int y) {
         this.nome = name;
         this.arestas = new ArrayList<>();
         this.x = x;
         this.y = y;
+        this.terminal = terminal;
     }
 
     public void addVizinho(Aresta aresta) {
@@ -82,6 +84,16 @@ public class Vertice implements Comparable<Vertice>{
     public void setY(int y) {
         this.y = y;
     }   
+
+    public boolean isTerminal() {
+        return terminal;
+    }
+
+    public void setTerminal(boolean terminal) {
+        this.terminal = terminal;
+    }
+    
+    
     
     @Override
     public String toString() {

@@ -17,6 +17,13 @@ public class Aresta {
         this.destino = destino;
     }
 
+    public Aresta(Vertice origem, Vertice destino, boolean terminal, double peso) {
+        this.peso = peso;
+        this.origem = origem;
+        this.destino = destino;
+        this.terminal = terminal;
+    }
+    
     public double getPeso() {
         return peso;
     }

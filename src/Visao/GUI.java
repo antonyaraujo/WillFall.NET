@@ -12,12 +12,15 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Label;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
@@ -28,9 +31,10 @@ import javax.swing.JOptionPane;
  * @author antony
  */
 public class GUI extends javax.swing.JFrame{
-    Sistema sys;
-    desenhoGrafo painel;
-    Color cor;
+    private Sistema sys;
+    private desenhoGrafo painel;
+    private Color cor;
+    private RespostaObservable resposta;
     /**
      * Creates new form GUI
      */
@@ -41,15 +45,35 @@ public class GUI extends javax.swing.JFrame{
         getContentPane().add(painel);
         pack();                               
         getContentPane().add(painel);
-        setLocationRelativeTo(null);
-        setExtendedState(MAXIMIZED_BOTH);               
-        initComponents();   
-        painel.setLocation(this.getX()/2, painelOpcoes.getY());
-        painel.setSize(new Dimension(this.getWidth()-painelOpcoes.getWidth()+50, painelOpcoes.getHeight()));
-        
+        setLocationRelativeTo(null);                 
+        initComponents();          
+        this.setSize(1200, 700);
+        Label jx = new Label();        
+        painel.setLocation(36, painelOpcoes.getY());
+        painel.setSize(new Dimension(this.getWidth()-painelOpcoes.getWidth()-106, painelOpcoes.getHeight()));        
+        resposta = new RespostaObservable("");
     }
 
+        public class RespostaObservable extends Observable {
 
+        private Object objeto;
+
+        public RespostaObservable(Object objeto) {
+            this.objeto = objeto;
+        }
+
+        public Object getObjeto() {
+            return objeto;
+        }
+
+        public void setName(Object objeto) {
+            this.objeto = objeto;
+            setChanged();
+            notifyObservers(objeto);
+        }
+
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -62,7 +86,7 @@ public class GUI extends javax.swing.JFrame{
         painelOpcoes = new javax.swing.JPanel();
         adicionarVertice = new javax.swing.JButton();
         Botao_sair = new javax.swing.JButton();
-        adicionarVertice1 = new javax.swing.JButton();
+        removerVertice = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
         carregarArquivo = new javax.swing.JMenuItem();
@@ -90,10 +114,10 @@ public class GUI extends javax.swing.JFrame{
             }
         });
 
-        adicionarVertice1.setText("Remover Equipamento");
-        adicionarVertice1.addActionListener(new java.awt.event.ActionListener() {
+        removerVertice.setText("Remover Equipamento");
+        removerVertice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adicionarVertice1ActionPerformed(evt);
+                removerVerticeActionPerformed(evt);
             }
         });
 
@@ -101,29 +125,24 @@ public class GUI extends javax.swing.JFrame{
         painelOpcoes.setLayout(painelOpcoesLayout);
         painelOpcoesLayout.setHorizontalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(painelOpcoesLayout.createSequentialGroup()
-                .addContainerGap(129, Short.MAX_VALUE)
-                .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addComponent(adicionarVertice)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addComponent(adicionarVertice1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(37, 37, 37))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
+                .addContainerGap(59, Short.MAX_VALUE)
+                .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(adicionarVertice)
+                    .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(removerVertice, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37))
         );
         painelOpcoesLayout.setVerticalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(painelOpcoesLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addComponent(adicionarVertice)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(adicionarVertice1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
+                .addComponent(removerVertice)
+                .addGap(97, 97, 97)
                 .addComponent(Botao_sair)
-                .addContainerGap(434, Short.MAX_VALUE))
+                .addContainerGap(357, Short.MAX_VALUE))
         );
 
         arquivo.setText("Arquivo");
@@ -159,7 +178,7 @@ public class GUI extends javax.swing.JFrame{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(873, Short.MAX_VALUE)
+                .addContainerGap(882, Short.MAX_VALUE)
                 .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36))
         );
@@ -168,7 +187,7 @@ public class GUI extends javax.swing.JFrame{
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -192,35 +211,32 @@ public class GUI extends javax.swing.JFrame{
     }//GEN-LAST:event_carregarArquivoActionPerformed
 
     private void adicionarVerticeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarVerticeActionPerformed
-       Object[] opcoes = {"Roteador", "Computador", "Internet"};
-       Object resposta = JOptionPane.showInputDialog(this, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);      
-       if(resposta.equals("Roteador"))
-           cor = Color.BLACK;
-       else if(resposta.equals("Computador"))
-           cor = Color.RED;
-       else
-           cor = Color.CYAN;
+        Object[] opcoes = {"Roteador", "Computador", "Internet"};
+        resposta.addObserver(painel.getResposta());
+        resposta.setName(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                      
+        painel.adicionarEquipamentoMouse();                  
+        painel.repaint();       
     }//GEN-LAST:event_adicionarVerticeActionPerformed
 
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
-        JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(DIRECTORIES_ONLY);
-        fc.showOpenDialog(this);        
+        JFileChooser fc = new JFileChooser();        
+        fc.setDialogTitle("Exportar Arquivo de Configuração");                
+        fc.showDialog(this, "Salvar");        
         try {
                 sys.salvarArquivo(fc.getSelectedFile().getPath());
         } catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }        
         painel.repaint();
+        
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
-    private void adicionarVertice1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarVertice1ActionPerformed
+    private void removerVerticeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerVerticeActionPerformed
         String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();
         if(sys.removerVertice(nome))
                 JOptionPane.showMessageDialog(null, "REMOVIDO COM SUCESSO!!");
-        painel.repaint();
-        painel.repaint();
-    }//GEN-LAST:event_adicionarVertice1ActionPerformed
+        painel.repaint();        
+    }//GEN-LAST:event_removerVerticeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,7 +249,7 @@ public class GUI extends javax.swing.JFrame{
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
+                if ("System".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -264,12 +280,12 @@ public class GUI extends javax.swing.JFrame{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Botao_sair;
     private javax.swing.JButton adicionarVertice;
-    private javax.swing.JButton adicionarVertice1;
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JMenuItem carregarArquivo;
     private javax.swing.JMenu grafo;
     private javax.swing.JPanel painelOpcoes;
+    private javax.swing.JButton removerVertice;
     private javax.swing.JMenuItem salvarArquivo;
     private javax.swing.JMenu visualizar;
     // End of variables declaration//GEN-END:variables

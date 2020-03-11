@@ -25,7 +25,7 @@ public class Sistema {
     }
     
     public boolean adicionarAresta(String inicio, Boolean terminal, String destino, double peso){                        
-        rede.adicionarAresta(inicio, destino, peso);
+        rede.adicionarAresta(inicio, destino, terminal, peso);
         return true;
     }
     
@@ -42,7 +42,10 @@ public class Sistema {
         BufferedReader buffer = new BufferedReader(leitor);
         while(buffer.ready()){
             String dados[] = buffer.readLine().split(";");
-            adicionarAresta(dados[0], Boolean.valueOf(dados[1]), dados[2], Double.parseDouble(dados[3]));  
+            if(dados[1].toLowerCase().equals("sim"))            
+                adicionarAresta(dados[0], true, dados[2], Double.parseDouble(dados[3]));  
+            else
+                adicionarAresta(dados[0], false, dados[2], Double.parseDouble(dados[3]));  
             rede.buscarVertice(dados[0]).setX(Integer.parseInt(dados[4]));
             rede.buscarVertice(dados[0]).setY(Integer.parseInt(dados[5]));
             rede.buscarVertice(dados[2]).setX(Integer.parseInt(dados[6]));
