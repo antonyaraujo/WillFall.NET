@@ -64,7 +64,7 @@ public class Grafo {
                 
         Aresta aresta = new Aresta(Origem, Destino, peso);
         Origem.addVizinho(aresta);
-        //Destino.addVizinho(aresta);
+        Destino.addVizinho(aresta);
         arestas.add(aresta);
     }
     
@@ -79,7 +79,7 @@ public class Grafo {
 
             for (Aresta aresta : vertex.getArestas()) {
                 Vertice v = aresta.getDestino();
-//                Vertice u = edge.getStartVertice();
+                //Vertice u = edge.getStartVertice();
                 double weight = aresta.getPeso();
                 double minDistance = vertex.getDistanciaMinima() + weight;
 

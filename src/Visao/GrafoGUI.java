@@ -9,6 +9,7 @@ import Modelo.Aresta;
 import Modelo.Grafo;
 import Modelo.Vertice;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -48,6 +49,7 @@ import javax.swing.*;
     Object resposta;
     boolean click;
     JMenuItem caminhos;
+    ArrayList<JButton> botoes = new ArrayList<JButton>();
     /**
      * Creates new form desenhoGrafo
      */
@@ -117,6 +119,8 @@ import javax.swing.*;
     
     private void adicionarEquipamento(Vertice equipamento){
         JButton bt_equipamento = new JButton(); 
+        bt_equipamento.setName(equipamento.getNome().toUpperCase());
+        botoes.add(bt_equipamento);
         this.add(bt_equipamento);        
         bt_equipamento.setLocation(equipamento.getX(), equipamento.getY());
         bt_equipamento.setSize(50, 50);        
@@ -199,6 +203,28 @@ import javax.swing.*;
         
     }
     
+    public void identificarCaminhos(Vertice equipamento){
+    ArrayList<String> colunas = new ArrayList<String>();
+                for(int i = 0; i < grafo.getNumVertices(); i++){                                        
+                        colunas.add(grafo.getVertices().get(i).getNome());                        
+                }
+                Object[][] dados = new Object[grafo.getNumVertices()/2-2][grafo.getNumVertices()];
+                ArrayList<List<Vertice>> lista = grafo.matrizMelhorCaminho(equipamento);
+                for(int j = 0; j < lista.size(); j++){
+                    for(int i = 0; i < lista.get(j).size(); i++){
+                        dados[i][j] = lista.get(j).get(i).getNome();
+                    }                        
+                }                
+                                             
+                colunas.remove(equipamento.getNome());
+                JTable tabela = new JTable(dados, colunas.toArray());                
+                tabela.setAutoResizeMode(500);                              
+                JScrollPane barraRolagem = new JScrollPane(tabela);                                                
+                JFrame exibir = new JFrame("Caminhos menos custosos do " + equipamento.getNome());
+                exibir.add(barraRolagem);
+                exibir.setSize(500, 250);
+                exibir.setVisible(true);
+    }
     private void popUpMenu()
     {        
         addMouseListener(new MouseAdapter() 
@@ -300,6 +326,19 @@ import javax.swing.*;
         mAdjFrame.setVisible(true);
         
     }       
+    
+    public void removerBotao(String nome){        
+        for(JButton botao : botoes){
+           if(botao.getName().equals(nome)){
+               JOptionPane.showMessageDialog(null, "Chegou aqui");               
+               botao.setVisible(false);
+               this.remove(botao);   
+               this.removeNotify();
+               botoes.remove(botao);               
+               break;
+           }
+        }                       
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

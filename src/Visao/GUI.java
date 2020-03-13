@@ -86,6 +86,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         Botao_sair = new javax.swing.JButton();
         removerEquipamentoButton = new javax.swing.JButton();
         resetarRedeButton = new javax.swing.JButton();
+        identificarCaminhos = new javax.swing.JButton();
         adicionarConexao = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
@@ -128,6 +129,13 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
             }
         });
 
+        identificarCaminhos.setText("Identificar Caminhos");
+        identificarCaminhos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                identificarCaminhosActionPerformed(evt);
+            }
+        });
+
         adicionarConexao.setText("Adicionar Conexão");
         adicionarConexao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,20 +147,20 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         painelOpcoes.setLayout(painelOpcoesLayout);
         painelOpcoesLayout.setHorizontalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(painelOpcoesLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
+                .addContainerGap(24, Short.MAX_VALUE)
                 .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
+                        .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
                         .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(removerEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(resetarRedeButton)
-                            .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(38, 38, 38))))
+                            .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(resetarRedeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18))))
         );
         painelOpcoesLayout.setVerticalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,7 +173,9 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                 .addComponent(adicionarConexao)
                 .addGap(18, 18, 18)
                 .addComponent(resetarRedeButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(identificarCaminhos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
                 .addComponent(Botao_sair)
                 .addContainerGap())
         );
@@ -203,8 +213,8 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(1307, Short.MAX_VALUE)
-                .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1188, Short.MAX_VALUE)
+                .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
@@ -250,20 +260,23 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         } catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }        
-        painel.repaint();
-        
+        painel.repaint();        
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
     private void removerEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoButtonActionPerformed
         String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();
         if(sys.removerVertice(nome))
                 JOptionPane.showMessageDialog(null, "REMOVIDO COM SUCESSO!!");
+        painel.removerBotao(nome);
+        painel.validate();
         painel.repaint();        
     }//GEN-LAST:event_removerEquipamentoButtonActionPerformed
 
     private void resetarRedeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeButtonActionPerformed
-        sys.resetarRede();
-       
+        sys.resetarRede();       
+       painel.removeAll();
+        painel.validate();
+        painel.repaint(); 
     }//GEN-LAST:event_resetarRedeButtonActionPerformed
 
     private void adicionarConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoActionPerformed
@@ -276,9 +289,14 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                      return;
                 int peso = (Integer.parseInt(JOptionPane.showInputDialog(null,"Digite o peso da conexão","Peso", 1)));
                     
-                sys.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);
-                painel.repaint();
+                sys.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);                                                                     
     }//GEN-LAST:event_adicionarConexaoActionPerformed
+
+    private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
+        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó");
+        painel.identificarCaminhos(sys.getGrafo().buscarVertice(computador));
+        
+    }//GEN-LAST:event_identificarCaminhosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -330,6 +348,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JMenuItem carregarArquivo;
     private javax.swing.JMenu grafo;
+    private javax.swing.JButton identificarCaminhos;
     private javax.swing.JPanel painelOpcoes;
     private javax.swing.JButton removerEquipamentoButton;
     private javax.swing.JButton resetarRedeButton;
