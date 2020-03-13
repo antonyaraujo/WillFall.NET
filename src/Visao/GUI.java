@@ -6,6 +6,7 @@
 package Visao;
 
 import Controlador.Sistema;
+import Modelo.Observer;
 import Modelo.Vertice;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -16,6 +17,7 @@ import java.awt.Label;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.logging.Level;
@@ -30,18 +32,18 @@ import javax.swing.JOptionPane;
  *
  * @author antony
  */
-public class GUI extends javax.swing.JFrame{
+public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private Sistema sys;
-    private desenhoGrafo painel;
+    private GrafoGUI painel;
     private Color cor;
-    private RespostaObservable resposta;
+    private ArrayList<Observer> observers;
     /**
      * Creates new form GUI
      */
     
     public GUI() throws IOException {
         this.sys = new Sistema();
-        painel = new desenhoGrafo(sys.getGrafo());
+        painel = new GrafoGUI(sys.getGrafo());
         getContentPane().add(painel);
         pack();                               
         getContentPane().add(painel);
@@ -51,28 +53,24 @@ public class GUI extends javax.swing.JFrame{
         Label jx = new Label();        
         painel.setLocation(36, painelOpcoes.getY());
         painel.setSize(new Dimension(this.getWidth()-painelOpcoes.getWidth()-106, painelOpcoes.getHeight()));        
-        resposta = new RespostaObservable("");
+        observers = new ArrayList();
     }
 
-        public class RespostaObservable extends Observable {
-
-        private Object objeto;
-
-        public RespostaObservable(Object objeto) {
-            this.objeto = objeto;
-        }
-
-        public Object getObjeto() {
-            return objeto;
-        }
-
-        public void setName(Object objeto) {
-            this.objeto = objeto;
-            setChanged();
-            notifyObservers(objeto);
-        }
-
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
     }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        
+    }
+        
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,9 +82,11 @@ public class GUI extends javax.swing.JFrame{
     private void initComponents() {
 
         painelOpcoes = new javax.swing.JPanel();
-        adicionarVertice = new javax.swing.JButton();
+        adicionarEquipamentoButton = new javax.swing.JButton();
         Botao_sair = new javax.swing.JButton();
-        removerVertice = new javax.swing.JButton();
+        removerEquipamentoButton = new javax.swing.JButton();
+        resetarRedeButton = new javax.swing.JButton();
+        adicionarConexao = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
         carregarArquivo = new javax.swing.JMenuItem();
@@ -100,10 +100,10 @@ public class GUI extends javax.swing.JFrame{
 
         painelOpcoes.setBorder(javax.swing.BorderFactory.createTitledBorder("Opções de Rede"));
 
-        adicionarVertice.setText("Adicionar Equipamento");
-        adicionarVertice.addActionListener(new java.awt.event.ActionListener() {
+        adicionarEquipamentoButton.setText("Adicionar Equipamento");
+        adicionarEquipamentoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adicionarVerticeActionPerformed(evt);
+                adicionarEquipamentoButtonActionPerformed(evt);
             }
         });
 
@@ -114,10 +114,24 @@ public class GUI extends javax.swing.JFrame{
             }
         });
 
-        removerVertice.setText("Remover Equipamento");
-        removerVertice.addActionListener(new java.awt.event.ActionListener() {
+        removerEquipamentoButton.setText("Remover Equipamento");
+        removerEquipamentoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removerVerticeActionPerformed(evt);
+                removerEquipamentoButtonActionPerformed(evt);
+            }
+        });
+
+        resetarRedeButton.setText("Resetar Rede");
+        resetarRedeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetarRedeButtonActionPerformed(evt);
+            }
+        });
+
+        adicionarConexao.setText("Adicionar Conexão");
+        adicionarConexao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adicionarConexaoActionPerformed(evt);
             }
         });
 
@@ -125,24 +139,35 @@ public class GUI extends javax.swing.JFrame{
         painelOpcoes.setLayout(painelOpcoesLayout);
         painelOpcoesLayout.setHorizontalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                .addContainerGap(59, Short.MAX_VALUE)
-                .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(adicionarVertice)
-                    .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(removerVertice, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37))
+            .addGroup(painelOpcoesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
+                        .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(removerEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
+                        .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(resetarRedeButton)
+                            .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38))))
         );
         painelOpcoesLayout.setVerticalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(painelOpcoesLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(adicionarVertice)
+                .addGap(20, 20, 20)
+                .addComponent(adicionarEquipamentoButton)
                 .addGap(18, 18, 18)
-                .addComponent(removerVertice)
-                .addGap(97, 97, 97)
+                .addComponent(removerEquipamentoButton)
+                .addGap(18, 18, 18)
+                .addComponent(adicionarConexao)
+                .addGap(18, 18, 18)
+                .addComponent(resetarRedeButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
                 .addComponent(Botao_sair)
-                .addContainerGap(357, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         arquivo.setText("Arquivo");
@@ -178,9 +203,9 @@ public class GUI extends javax.swing.JFrame{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(882, Short.MAX_VALUE)
-                .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addContainerGap(1307, Short.MAX_VALUE)
+                .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,13 +235,11 @@ public class GUI extends javax.swing.JFrame{
         painel.repaint();
     }//GEN-LAST:event_carregarArquivoActionPerformed
 
-    private void adicionarVerticeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarVerticeActionPerformed
-        Object[] opcoes = {"Roteador", "Computador", "Internet"};
-        resposta.addObserver(painel.getResposta());
-        resposta.setName(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                      
-        painel.adicionarEquipamentoMouse();                  
+    private void adicionarEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoButtonActionPerformed
+        Object[] opcoes = {"Roteador", "Computador", "Internet"};                   
+        painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                  
         painel.repaint();       
-    }//GEN-LAST:event_adicionarVerticeActionPerformed
+    }//GEN-LAST:event_adicionarEquipamentoButtonActionPerformed
 
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
         JFileChooser fc = new JFileChooser();        
@@ -231,12 +254,31 @@ public class GUI extends javax.swing.JFrame{
         
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
-    private void removerVerticeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerVerticeActionPerformed
+    private void removerEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoButtonActionPerformed
         String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();
         if(sys.removerVertice(nome))
                 JOptionPane.showMessageDialog(null, "REMOVIDO COM SUCESSO!!");
         painel.repaint();        
-    }//GEN-LAST:event_removerVerticeActionPerformed
+    }//GEN-LAST:event_removerEquipamentoButtonActionPerformed
+
+    private void resetarRedeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeButtonActionPerformed
+        sys.resetarRede();
+       
+    }//GEN-LAST:event_resetarRedeButtonActionPerformed
+
+    private void adicionarConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoActionPerformed
+        
+                String r1 = JOptionPane.showInputDialog(null,"Digite o rótulo do primeiro equipamento", "Rótulo", 1);
+                if (r1==null)
+                    return;
+                String r2 = JOptionPane.showInputDialog(null,"Digite o rótulo do segundo equipamento", "Rótulo", 1);
+                if (r2==null)
+                     return;
+                int peso = (Integer.parseInt(JOptionPane.showInputDialog(null,"Digite o peso da conexão","Peso", 1)));
+                    
+                sys.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);
+                painel.repaint();
+    }//GEN-LAST:event_adicionarConexaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -247,9 +289,12 @@ public class GUI extends javax.swing.JFrame{
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        String so = "";
+        so = System.getProperty("os.name");
+        so = so.replaceAll("10", "").strip();
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("System".equals(info.getName())) {
+                if (so.equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -279,13 +324,15 @@ public class GUI extends javax.swing.JFrame{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Botao_sair;
-    private javax.swing.JButton adicionarVertice;
+    private javax.swing.JButton adicionarConexao;
+    private javax.swing.JButton adicionarEquipamentoButton;
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JMenuItem carregarArquivo;
     private javax.swing.JMenu grafo;
     private javax.swing.JPanel painelOpcoes;
-    private javax.swing.JButton removerVertice;
+    private javax.swing.JButton removerEquipamentoButton;
+    private javax.swing.JButton resetarRedeButton;
     private javax.swing.JMenuItem salvarArquivo;
     private javax.swing.JMenu visualizar;
     // End of variables declaration//GEN-END:variables

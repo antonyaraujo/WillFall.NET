@@ -24,70 +24,113 @@ public class Sistema {
     public Sistema() throws IOException{        
     }
     
-    public boolean adicionarAresta(String inicio, Boolean terminal, String destino, double peso){                        
-        rede.adicionarAresta(inicio, destino, terminal, peso);
+    public boolean adicionarAresta(String inicio,String destino, double peso){                        
+        rede.adicionarAresta(inicio, destino, peso);
         return true;
     }
     
-    public List<Vertice> melhorCaminho(String origem, String destino){        
-        Vertice Origem = rede.buscarVertice(origem);
-        Vertice Destino = rede.buscarVertice(destino);
-        rede.computePath(Origem);
-        return rede.getShortestPathTo(Destino);
+    public List<Vertice> melhorCaminho(String origem, String destino){   
+        return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
     }
     
     public void carregarArquivo(File arquivo) throws FileNotFoundException, IOException{        
-        if(arquivo.exists()){
-        FileReader leitor = new FileReader(arquivo);
-        BufferedReader buffer = new BufferedReader(leitor);
-        while(buffer.ready()){
-            String dados[] = buffer.readLine().split(";");
-            if(dados[1].toLowerCase().equals("sim"))            
-                adicionarAresta(dados[0], true, dados[2], Double.parseDouble(dados[3]));  
-            else
-                adicionarAresta(dados[0], false, dados[2], Double.parseDouble(dados[3]));  
-            rede.buscarVertice(dados[0]).setX(Integer.parseInt(dados[4]));
-            rede.buscarVertice(dados[0]).setY(Integer.parseInt(dados[5]));
-            rede.buscarVertice(dados[2]).setX(Integer.parseInt(dados[6]));
-            rede.buscarVertice(dados[2]).setY(Integer.parseInt(dados[7]));
-        }
-        } else{
-            JOptionPane.showMessageDialog(null, "Arquivo inexistente");
+        try 
+        {
+     
+            int i = 0;
+            String linha;
+            FileReader leitor = new FileReader(arquivo);
+            BufferedReader buffer = new BufferedReader(leitor);
+            while((linha = buffer.readLine())!=null && !linha.replaceAll("\n", "").equals("CONEXOES"))
+            {
+                try 
+                {
+                    String dados[] = linha.split(";");
+                    boolean terminal = (dados[1].equals("SIM"));
+                    int x = Integer.valueOf(dados[2]);
+                    int y = Integer.valueOf(dados[3]);
+                    rede.adicionarVertice(dados[0], terminal, x, y);
+                }
+                catch (Exception e) 
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
+                }
+                i++;
+            }
+
+            while((linha = buffer.readLine())!=null)
+            {
+                try 
+                {
+                    String dados[] = linha.split(";");
+                    String origem = dados[0];
+                    String destino = dados[1];
+                    double peso = Double.valueOf(dados[2]);
+                    rede.adicionarAresta(origem, destino, peso);
+                }
+                catch (Exception e) 
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar uma conexão!");
+                }
+                i++;
+            }
+
+        } 
+        catch (FileNotFoundException e) 
+        {
+          JOptionPane.showMessageDialog(null,"Arquivo não encontrado!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-
+    
      public Grafo getGrafo(){
         return rede;
     }
 
     public void salvarArquivo(String path) throws IOException {
-       File arquivo = new File(path);       
-       String arquivoFinal = "";
-       for(int i = 0; i < rede.getArestas().size(); i++){
-           String origem = rede.getArestas().get(i).getOrigem().getNome();
-           String destino = rede.getArestas().get(i).getDestino().getNome();
+       File arquivo = new File(path);
+       String vertices="ROTULO;TERMINAL;COORDENADA_X;COORDENADA_Y\n";
+       String arestas = "ORIGEM;DESTINO;PESO\n";
+       StringBuilder arquivoFinal = new StringBuilder();
+       
+       
+       for(int i = 0; i < rede.getVertices().size(); i++)
+       {
+           Vertice v = rede.getVertice(i);
+           String rotulo = v.getNome();
            String terminal;
-           if(rede.getArestas().get(i).isTerminal())
-               terminal = "Sim";
-           else 
-               terminal = "Nao";
-        String peso = String.valueOf(rede.getArestas().get(i).getPeso());
-        String x_origem = String.valueOf(rede.getArestas().get(i).getOrigem().getX());
-        String y_origem = String.valueOf(rede.getArestas().get(i).getOrigem().getY());
-        String x_destino = String.valueOf(rede.getArestas().get(i).getDestino().getX());
-        String y_destino = String.valueOf(rede.getArestas().get(i).getDestino().getY());
-       arquivoFinal += origem + ";" + terminal + ";" + destino + ";" + peso + ";" + x_origem + ";" +y_origem + ";" + x_destino + ";" +y_destino + "\n";
-       System.out.println(arquivoFinal);
-      
-    }
-    FileWriter escritor = new FileWriter(arquivo+".txt");
-    BufferedWriter buffer = new BufferedWriter(escritor);
-    buffer.write(arquivoFinal);
-    buffer.close();       
+           terminal = (v.isTerminal())? "SIM":"NAO";
+           String x = String.valueOf(v.getX());
+           String y = String.valueOf(v.getY());
+           vertices += rotulo + ";" + terminal + ";" + x + ";" +y + "\n";
+        }
+       
+       for (int i =0; i < rede.getArestas().size(); i++)
+       {
+           Aresta a = rede.getArestas().get(i);
+           String origem = a.getOrigem().getNome();
+           String destino = a.getDestino().getNome();
+           String peso = String.valueOf(a.getPeso());
+           arestas+= origem + ";" + destino + ";" + peso + "\n"; 
+       }
+       arquivoFinal.append("EQUIPAMENTOS\n");
+       arquivoFinal.append(vertices);
+       arquivoFinal.append("CONEXOES\n");
+       arquivoFinal.append(arestas);
+       
+        FileWriter escritor = new FileWriter(arquivo+".txt");
+        BufferedWriter buffer = new BufferedWriter(escritor);
+        buffer.write(arquivoFinal.toString());
+        buffer.close();       
     }
     
     public boolean removerVertice(String nome){
         return rede.removerVertice(nome);
+        
+    }
+    
+    public void resetarRede()
+    {
+        rede.removerTodosVertices();
         
     }
     

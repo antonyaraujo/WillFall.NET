@@ -46,32 +46,30 @@ public class Grafo {
     public void adicionarVertice(String nome){
         if(buscarVertice(nome) == null){
             vertices.add(new Vertice(nome));        
-            System.out.println("Adicionou");
         }
     }
     
     public void adicionarVertice(String nome, boolean terminal, int x, int y){
         if(buscarVertice(nome) == null){
             vertices.add(new Vertice(nome, terminal, x, y));        
-            System.out.println("Adicionou");
         }
     }
     
-    public void adicionarAresta(String origem, String destino, boolean terminal,  double peso){
+    public void adicionarAresta(String origem, String destino,  double peso){
         adicionarVertice(origem);
         adicionarVertice(destino);
         Vertice Origem = buscarVertice(origem);
-        Origem.setTerminal(terminal);
+       
         Vertice Destino = buscarVertice(destino);        
                 
-        Aresta aresta = new Aresta(Origem, Destino, terminal, peso);
+        Aresta aresta = new Aresta(Origem, Destino, peso);
         Origem.addVizinho(aresta);
         //Destino.addVizinho(aresta);
         arestas.add(aresta);
     }
     
     
-     public void computePath(Vertice origem) {
+     public void calcularMenoresDistancias(Vertice origem) {
         origem.setDistanciaMinima(0);
         PriorityQueue<Vertice> filaPrioridade = new PriorityQueue<>();
         filaPrioridade.add(origem);
@@ -95,7 +93,7 @@ public class Grafo {
         }
     }
 
-    public List<Vertice> getShortestPathTo(Vertice targetVerte) {
+    public List<Vertice> getCaminhoMaisCurtoPara(Vertice targetVerte) {
         List<Vertice> path = new ArrayList<>();
 
         for (Vertice vertex = targetVerte; vertex != null; vertex = vertex.getAnterior()) {
@@ -106,12 +104,18 @@ public class Grafo {
         return path;
     }
     
+    public List<Vertice> getCaminhoMaisCurtoEntreVertices(String origem, String destino)
+    {
+        calcularMenoresDistancias(buscarVertice(origem));
+        return  getCaminhoMaisCurtoPara(buscarVertice(destino));
+    }
+    
     public ArrayList<List<Vertice>> matrizMelhorCaminho(Vertice vertice){
-        computePath(vertice);
+        calcularMenoresDistancias(vertice);
         ArrayList<List<Vertice>> caminhos = new ArrayList<List<Vertice>>();
         for(Vertice v : vertices){
             if(!v.getNome().equals(vertice.getNome())){
-                caminhos.add(getShortestPathTo(v));
+                caminhos.add(getCaminhoMaisCurtoPara(v));
             }
         }
         return caminhos;
@@ -145,6 +149,12 @@ public class Grafo {
         }
         vertices.remove(v);
         return true;
+    }
+    
+    public void removerTodosVertices()
+    {
+        vertices.clear();
+        arestas.clear();
     }
 
 }

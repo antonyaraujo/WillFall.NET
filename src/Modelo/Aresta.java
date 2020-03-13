@@ -9,7 +9,7 @@ public class Aresta {
     private double peso;
     private Vertice origem;
     private Vertice destino;
-    private boolean terminal;   
+   
 
     public Aresta(Vertice origem, Vertice destino, double peso) {
         this.peso = peso;
@@ -17,12 +17,7 @@ public class Aresta {
         this.destino = destino;
     }
 
-    public Aresta(Vertice origem, Vertice destino, boolean terminal, double peso) {
-        this.peso = peso;
-        this.origem = origem;
-        this.destino = destino;
-        this.terminal = terminal;
-    }
+    
     
     public double getPeso() {
         return peso;
@@ -48,13 +43,6 @@ public class Aresta {
         this.destino = destino;
     }
     
-    public boolean isTerminal() {
-        return terminal;
-    }
-
-    public void setTerminal(boolean terminal) {
-        this.terminal = terminal;
-    }
     
   
 }

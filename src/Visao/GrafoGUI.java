@@ -28,7 +28,7 @@ import javax.swing.*;
  *
  * @author antony
  */
-    public class desenhoGrafo extends javax.swing.JPanel {
+    public class GrafoGUI extends javax.swing.JPanel{
 
     private int x_novoVertice;
     private int y_novoVertice;
@@ -45,14 +45,14 @@ import javax.swing.*;
     JLabel grafoLabel;
     boolean hasclicked1=false;
     JLabel click1label=null;
-    ObjectObserver resposta;
+    Object resposta;
     boolean click;
     JMenuItem caminhos;
     /**
      * Creates new form desenhoGrafo
      */
         
-    public desenhoGrafo(Grafo grafo) {
+    public GrafoGUI(Grafo grafo) {
         
         
         this.grafo = grafo;                                   
@@ -75,54 +75,38 @@ import javax.swing.*;
         clickNoGrafo = false;
         initComponents();
         setVisible(true);   
-        resposta = new ObjectObserver();
     }
     
     public Grafo getGrafo(){
         return grafo;
     }       
-    
-        public class ObjectObserver implements Observer {
-
-            private Object objeto;
-
-            public ObjectObserver() {
-                objeto = null;
-            }            
-            
-            public Object getObjeto(){
-                return objeto;
-            }
-
-            @Override
-            public void update(Observable obj, Object arg) {
-                if (arg instanceof Object) {
-                    objeto = (Object) arg;                                    
-                }
-            }
-        }
-    
-        public Observer getResposta(){
-            return resposta;
-        }
         
-    public void adicionarEquipamentoMouse(){        
+    public void adicionarEquipamentoMouse(Object tipoEquipamento){ 
+        resposta = tipoEquipamento;
+        if (resposta == null)
+            return;
         clickNoGrafo = true;                                
         addMouseListener(new MouseAdapter() 
         {            
             public void mouseClicked(MouseEvent e)
-            {                
+            {
                 if(clickNoGrafo){                    
                     x_novoVertice = e.getX();
-                    y_novoVertice = e.getY();                    
-                    String nomeEquipamento =JOptionPane.showInputDialog(null, "Digite o rótulo do vértice", "Rótulo", 1).toUpperCase();                                    
-                    if (resposta.getObjeto().equals("Roteador")){                        
+                    y_novoVertice = e.getY();   
+                    String nomeEquipamento;
+                    nomeEquipamento = JOptionPane.showInputDialog(null, "Digite o rótulo do equipamento", "Rótulo", 1);
+                    if (nomeEquipamento==null)
+                    {
+                        clickNoGrafo = false;
+                        return;
+                    }
+                    else nomeEquipamento = nomeEquipamento.toUpperCase();
+                    if (resposta.equals("Roteador")){                        
                         grafo.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);                                      
                     }
-                    else if (resposta.getObjeto().equals("Computador")){
+                    else if (resposta.equals("Computador")){
                         grafo.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);                                                             
                     }
-                    
                     adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));                                        
                     clickNoGrafo = false;                    
                 }                
@@ -147,7 +131,16 @@ import javax.swing.*;
             img = new ImageIcon("imagens/terminal.png");
             bt_equipamento.setIcon(new ImageIcon(img.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));            
         }   
-        
+        bt_equipamento.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!equipamento.isTerminal())
+                    bt_equipamento.setSelected(!bt_equipamento.isSelected());
+               
+                    
+                
+            }
+        });
         bt_equipamento.setVisible(true);
         bt_equipamento.setOpaque(false);
         bt_equipamento.setContentAreaFilled(false);
@@ -226,7 +219,7 @@ import javax.swing.*;
         addVertexMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String label = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do vértice", "Rótulo", 1).toUpperCase();
+                String label = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do equipamento", "Rótulo", 1).toUpperCase();
                 if (label==null)
                     return;
                 grafo.adicionarVertice(label, false, x_novoVertice, y_novoVertice);
@@ -242,11 +235,7 @@ import javax.swing.*;
                 String nome1 = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do primeiro vértice", "Rótulo", 1).toUpperCase();
                 String nome2 = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do segundo vértice", "Rótulo", 1).toUpperCase();
                 int peso = Integer.parseInt(JOptionPane.showInputDialog(popMenu,"Digite o peso","Peso", 1).toUpperCase());                
-                int terminal = JOptionPane.showConfirmDialog(null, "Terminal", "Cancelar", JOptionPane.YES_NO_OPTION);
-                if(terminal == JOptionPane.YES_OPTION)
-                    grafo.adicionarAresta(nome1, nome2, true, peso);
-                else
-                    grafo.adicionarAresta(nome1, nome2, false, peso);
+                grafo.adicionarAresta(nome1, nome2, peso);
                 repaint();
             }
         });
@@ -333,8 +322,6 @@ import javax.swing.*;
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 378, Short.MAX_VALUE)
         );
-
-        getAccessibleContext().setAccessibleName("Visualização da Rede - WillFall.NET");
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
