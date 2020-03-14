@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -86,6 +88,27 @@ public class Sistema {
         return rede;
     }
 
+     public JScrollPane identificarMelhorCaminho(String nome){
+         Vertice equipamento = rede.buscarVertice(nome);
+         ArrayList<String> colunas = new ArrayList<String>();
+            for (int i = 0; i < rede.getNumVertices(); i++) {
+                colunas.add(rede.getVertices().get(i).getNome());
+            }
+            Object[][] dados = new Object[rede.getNumVertices()/2][rede.getNumVertices()];
+            ArrayList<List<Vertice>> lista = rede.matrizMelhorCaminho(equipamento);
+            for (int j = 0; j < lista.size(); j++) {
+                for (int i = 0; i < lista.get(j).size(); i++) {
+                    dados[i][j] = lista.get(j).get(i).getNome();
+                }
+            }            
+            colunas.remove(equipamento.getNome());            
+            JTable tabela = new JTable(dados, colunas.toArray());                                    
+            tabela.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+            JScrollPane barraRolagem = new JScrollPane(tabela);
+            barraRolagem.notifyAll();
+            return barraRolagem;
+     }
+     
     public void salvarArquivo(String path) throws IOException {
        File arquivo = new File(path);
        String vertices="ROTULO;TERMINAL;COORDENADA_X;COORDENADA_Y\n";

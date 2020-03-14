@@ -12,12 +12,12 @@ import java.util.List;
  */
 public class Grafo {
     private ArrayList<Vertice> vertices;
-    private ArrayList<Aresta> arestas;
+    private ArrayList<Aresta> arestas;    
     
     public Grafo(){
         vertices = new ArrayList<Vertice>();
-        arestas = new ArrayList<Aresta>();
-    }        
+        arestas = new ArrayList<Aresta>();        
+    }            
     
     public int getNumVertices(){
         return vertices.size();
@@ -88,8 +88,8 @@ public class Grafo {
                     v.setAnterior(vertex);
                     v.setDistanciaMinima(minDistance);
                     filaPrioridade.add(v);
-                }
-            }
+                }                
+            }            
         }
     }
 
@@ -98,11 +98,10 @@ public class Grafo {
 
         for (Vertice vertex = targetVerte; vertex != null; vertex = vertex.getAnterior()) {
             path.add(vertex);
-        }
-
+        }        
         Collections.reverse(path);
         return path;
-    }
+    }       
     
     public List<Vertice> getCaminhoMaisCurtoEntreVertices(String origem, String destino)
     {

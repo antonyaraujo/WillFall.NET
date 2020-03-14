@@ -8,22 +8,17 @@ package Visao;
 import Modelo.Aresta;
 import Modelo.Grafo;
 import Modelo.Vertice;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.*;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -203,28 +198,8 @@ import javax.swing.*;
         
     }
     
-    public void identificarCaminhos(Vertice equipamento){
-    ArrayList<String> colunas = new ArrayList<String>();
-                for(int i = 0; i < grafo.getNumVertices(); i++){                                        
-                        colunas.add(grafo.getVertices().get(i).getNome());                        
-                }
-                Object[][] dados = new Object[grafo.getNumVertices()/2-2][grafo.getNumVertices()];
-                ArrayList<List<Vertice>> lista = grafo.matrizMelhorCaminho(equipamento);
-                for(int j = 0; j < lista.size(); j++){
-                    for(int i = 0; i < lista.get(j).size(); i++){
-                        dados[i][j] = lista.get(j).get(i).getNome();
-                    }                        
-                }                
-                                             
-                colunas.remove(equipamento.getNome());
-                JTable tabela = new JTable(dados, colunas.toArray());                
-                tabela.setAutoResizeMode(500);                              
-                JScrollPane barraRolagem = new JScrollPane(tabela);                                                
-                JFrame exibir = new JFrame("Caminhos menos custosos do " + equipamento.getNome());
-                exibir.add(barraRolagem);
-                exibir.setSize(500, 250);
-                exibir.setVisible(true);
-    }
+        
+        
     private void popUpMenu()
     {        
         addMouseListener(new MouseAdapter() 

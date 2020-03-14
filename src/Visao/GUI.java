@@ -7,26 +7,21 @@ package Visao;
 
 import Controlador.Sistema;
 import Modelo.Observer;
-import Modelo.Vertice;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Label;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import static javax.swing.SwingConstants.CENTER;
 
 /**
  *
@@ -41,7 +36,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
      * Creates new form GUI
      */
     
-    public GUI() throws IOException {
+    public GUI() throws IOException {        
         this.sys = new Sistema();
         painel = new GrafoGUI(sys.getGrafo());
         getContentPane().add(painel);
@@ -54,6 +49,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         painel.setLocation(36, painelOpcoes.getY());
         painel.setSize(new Dimension(this.getWidth()-painelOpcoes.getWidth()-106, painelOpcoes.getHeight()));        
         observers = new ArrayList();
+        this.setLocationRelativeTo(null);
     }
 
     @Override
@@ -213,7 +209,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(1188, Short.MAX_VALUE)
+                .addContainerGap(417, Short.MAX_VALUE)
                 .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
         );
@@ -294,8 +290,22 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
 
     private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
         String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó");
-        painel.identificarCaminhos(sys.getGrafo().buscarVertice(computador));
-        
+        JScrollPane barraRolagem = sys.identificarMelhorCaminho(computador);
+        JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
+        exibir.add(barraRolagem);
+        JButton salvar = new JButton("Salvar");
+        JButton sair = new JButton("Sair");
+        sair.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                exibir.setVisible(false);
+            }
+        });
+        exibir.setSize(600, 200);
+        exibir.setVisible(true);
+        exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        exibir.setLocationRelativeTo(null);
+        barraRolagem.validate();
+        barraRolagem.repaint();
     }//GEN-LAST:event_identificarCaminhosActionPerformed
 
     /**
