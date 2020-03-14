@@ -186,7 +186,8 @@ import javax.swing.table.DefaultTableModel;
                     }
                         
                 }
-                JTable tabela = new JTable(dados, colunas);                
+                JTable tabela = new JTable(dados, colunas);
+                //Observable observableTabela = new Observable();
                 JScrollPane barraRolagem = new JScrollPane(tabela);                
                 tabela.setVisible(true);
                 barraRolagem.setVisible(true);                
@@ -264,9 +265,16 @@ import javax.swing.table.DefaultTableModel;
                     g.drawLine(arestas.get(i).getOrigem().getX()+15, arestas.get(i).getOrigem().getY()+20, 
                             arestas.get(i).getDestino().getX()+15,
                             arestas.get(i).getDestino().getY()+20);           
-                     g.drawString(String.valueOf(arestas.get(i).getPeso()), (arestas.get(i).getDestino().getX()+arestas.get(i).getOrigem().getX())/2, (arestas.get(i).getOrigem().getY()+arestas.get(i).getDestino().getY())/2);
+                    exibirPesos(g);
         }
     }      
+    
+    public void exibirPesos(Graphics g){
+        ArrayList<Aresta> arestas = grafo.getArestas();
+        for (int i =0; i <  arestas.size(); i++){                                                
+            g.drawString(String.valueOf(arestas.get(i).getPeso()), (arestas.get(i).getDestino().getX()+arestas.get(i).getOrigem().getX())/2, (arestas.get(i).getOrigem().getY()+arestas.get(i).getDestino().getY())/2);
+        }
+    }
     
     public void adjMatrix()
     {        

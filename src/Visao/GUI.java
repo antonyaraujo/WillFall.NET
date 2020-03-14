@@ -89,6 +89,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         carregarArquivo = new javax.swing.JMenuItem();
         salvarArquivo = new javax.swing.JMenuItem();
         visualizar = new javax.swing.JMenu();
+        exibirPesos = new javax.swing.JCheckBoxMenuItem();
         grafo = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -197,6 +198,16 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         barraMenu.add(arquivo);
 
         visualizar.setText("Visualizar");
+
+        exibirPesos.setSelected(true);
+        exibirPesos.setText("Exibir pesos");
+        exibirPesos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exibirPesosActionPerformed(evt);
+            }
+        });
+        visualizar.add(exibirPesos);
+
         barraMenu.add(visualizar);
 
         grafo.setText("Grafo");
@@ -308,6 +319,12 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         barraRolagem.repaint();
     }//GEN-LAST:event_identificarCaminhosActionPerformed
 
+    private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
+        if(!exibirPesos.isSelected()){
+            
+        }
+    }//GEN-LAST:event_exibirPesosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -357,6 +374,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JMenuItem carregarArquivo;
+    private javax.swing.JCheckBoxMenuItem exibirPesos;
     private javax.swing.JMenu grafo;
     private javax.swing.JButton identificarCaminhos;
     private javax.swing.JPanel painelOpcoes;
