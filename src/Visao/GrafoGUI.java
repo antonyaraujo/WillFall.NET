@@ -17,8 +17,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -43,16 +41,13 @@ import javax.swing.table.DefaultTableModel;
     JLabel click1label=null;
     Object resposta;
     boolean click;
-    JMenuItem caminhos;
-    ArrayList<JButton> botoes = new ArrayList<JButton>();
+    JMenuItem caminhos;    
     /**
      * Creates new form desenhoGrafo
      */
         
-    public GrafoGUI(Grafo grafo) {
-        
-        
-        this.grafo = grafo;                                   
+    public GrafoGUI(Grafo grafo) {  
+        this.grafo = grafo;
         grafoLabel = new JLabel("GRAFO COM " + " VÉRTICES");
         add(grafoLabel);
         adjMatrixButton = new JButton("Visualizar Matrix de Adjacência");
@@ -68,7 +63,7 @@ import javax.swing.table.DefaultTableModel;
         add(popMenu);
         popUpMenu();
         caminhos = new JMenuItem("Ver melhores caminhos");
-        popMenuTerminal.add(caminhos);
+        popMenuTerminal.add(caminhos);        
         clickNoGrafo = false;
         initComponents();
         setVisible(true);   
@@ -114,9 +109,8 @@ import javax.swing.table.DefaultTableModel;
     
     private void adicionarEquipamento(Vertice equipamento){
         JButton bt_equipamento = new JButton(); 
-        bt_equipamento.setName(equipamento.getNome().toUpperCase());
-        botoes.add(bt_equipamento);
-        this.add(bt_equipamento);        
+        bt_equipamento.setName(equipamento.getNome().toUpperCase());        
+        this.add(equipamento.getNome(), bt_equipamento);        
         bt_equipamento.setLocation(equipamento.getX(), equipamento.getY());
         bt_equipamento.setSize(50, 50);        
         ImageIcon img, selecionado;        
@@ -148,7 +142,7 @@ import javax.swing.table.DefaultTableModel;
         rotulo.setLocation(bt_equipamento.getX()+15, bt_equipamento.getY()+50);
         rotulo.setSize(100, 10);        
         rotulo.setVisible(true);            
-        this.add(rotulo);           
+        this.add(rotulo);                   
         this.repaint();        
         popMenuEquipamento(equipamento, bt_equipamento);        
         this.initComponents();        
@@ -186,8 +180,7 @@ import javax.swing.table.DefaultTableModel;
                     }
                         
                 }
-                JTable tabela = new JTable(dados, colunas);
-                //Observable observableTabela = new Observable();
+                JTable tabela = new JTable(dados, colunas);                
                 JScrollPane barraRolagem = new JScrollPane(tabela);                
                 tabela.setVisible(true);
                 barraRolagem.setVisible(true);                
@@ -270,15 +263,15 @@ import javax.swing.table.DefaultTableModel;
     }      
     
     public void exibirPesos(Graphics g){
-        ArrayList<Aresta> arestas = grafo.getArestas();
-        for (int i =0; i <  arestas.size(); i++){                                                
-            g.drawString(String.valueOf(arestas.get(i).getPeso()), (arestas.get(i).getDestino().getX()+arestas.get(i).getOrigem().getX())/2, (arestas.get(i).getOrigem().getY()+arestas.get(i).getDestino().getY())/2);
-        }
+        ArrayList<Aresta> arestas = grafo.getArestas();        
+            for (int i =0; i <  arestas.size(); i++){                                                
+                g.drawString(String.valueOf(arestas.get(i).getPeso()), (arestas.get(i).getDestino().getX()+arestas.get(i).getOrigem().getX())/2, (arestas.get(i).getOrigem().getY()+arestas.get(i).getDestino().getY())/2);
+            }       
     }
     
     public void adjMatrix()
     {        
-        int [][] matrix = new int [grafo.getNumVertices()][grafo.getNumVertices()];
+      /*  int [][] matrix = new int [grafo.getNumVertices()][grafo.getNumVertices()];
         String [][] dados = new String[grafo.getNumVertices()][grafo.getNumVertices()+1];
         
         for (int i=0; i< grafo.getNumVertices(); i++)
@@ -306,22 +299,8 @@ import javax.swing.table.DefaultTableModel;
         mAdjFrame.setTitle("Matriz de Adjacência");
         mAdjFrame.add(scrollPane);
         mAdjFrame.setSize(360,360);
-        mAdjFrame.setVisible(true);
-        
+        mAdjFrame.setVisible(true);         */
     }       
-    
-    public void removerBotao(String nome){        
-        for(JButton botao : botoes){
-           if(botao.getName().equals(nome)){
-               JOptionPane.showMessageDialog(null, "Chegou aqui");               
-               botao.setVisible(false);
-               this.remove(botao);   
-               this.removeNotify();
-               botoes.remove(botao);               
-               break;
-           }
-        }                       
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.

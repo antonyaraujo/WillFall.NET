@@ -2,7 +2,6 @@ package Modelo;
 
 import java.util.PriorityQueue;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -123,30 +122,38 @@ public class Grafo {
     private ArrayList<Integer> buscarArestas(String nome)
     {
         int index = 0;
-        ArrayList<Integer> indices = new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<Integer>();
         for (Aresta a: arestas)
         {
             if (a.getOrigem().getNome().equals(nome))
                 indices.add(index);
+            if (a.getDestino().getNome().equals(nome))
+                indices.add(index);
             index++;
         }
-        return indices;
-   
+        return indices;   
     }
     
     
     public boolean removerVertice(String nome)
     {
         Vertice v = buscarVertice(nome);
-        if (v==null)
-            return false;
+        if (v == null)
+            return false;                        
         
         ArrayList<Integer> indices = buscarArestas(nome);
+        
+        for(int i = 0; i < indices.size(); i++){            
+                arestas.get(i).getOrigem().getArestas().remove(v.getArestas().get(i));
+                arestas.get(i).getDestino().getArestas().remove(v.getArestas().get(i));
+            }
+        
         for (int i = 0; i < indices.size(); i++)
         {
            arestas.remove(i);            
         }
-        vertices.remove(v);
+                
+        vertices.remove(v);        
         return true;
     }
     

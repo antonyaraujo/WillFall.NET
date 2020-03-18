@@ -7,9 +7,7 @@ package Visao;
 
 import Controlador.Sistema;
 import Modelo.Observer;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Label;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -19,9 +17,9 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import static javax.swing.SwingConstants.CENTER;
 
 /**
  *
@@ -30,26 +28,22 @@ import static javax.swing.SwingConstants.CENTER;
 public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private Sistema sys;
     private GrafoGUI painel;
-    private Color cor;
     private ArrayList<Observer> observers;
     /**
      * Creates new form GUI
      */
     
     public GUI() throws IOException {        
-        this.sys = new Sistema();
+        this.sys = new Sistema();             
+        initComponents();
+        pack();                                 
+        this.setSize(1200, 700);                  
         painel = new GrafoGUI(sys.getGrafo());
-        getContentPane().add(painel);
-        pack();                               
-        getContentPane().add(painel);
-        setLocationRelativeTo(null);                 
-        initComponents();          
-        this.setSize(1200, 700);
-        Label jx = new Label();        
+        getContentPane().add(painel);         
         painel.setLocation(36, painelOpcoes.getY());
-        painel.setSize(new Dimension(this.getWidth()-painelOpcoes.getWidth()-106, painelOpcoes.getHeight()));        
-        observers = new ArrayList();
+        painel.setSize(this.getWidth()-painelOpcoes.getWidth()-100, painelOpcoes.getHeight());        
         this.setLocationRelativeTo(null);
+        observers = new ArrayList();                          
     }
 
     @Override
@@ -271,17 +265,16 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
     private void removerEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoButtonActionPerformed
-        String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();
+        String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();                          
         if(sys.removerVertice(nome))
-                JOptionPane.showMessageDialog(null, "REMOVIDO COM SUCESSO!!");
-        painel.removerBotao(nome);
-        painel.validate();
-        painel.repaint();        
+                JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!");        
+        painel.removeAll();
+        painel.repaint();
     }//GEN-LAST:event_removerEquipamentoButtonActionPerformed
 
     private void resetarRedeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeButtonActionPerformed
         sys.resetarRede();       
-       painel.removeAll();
+        painel.removeAll();
         painel.validate();
         painel.repaint(); 
     }//GEN-LAST:event_resetarRedeButtonActionPerformed
