@@ -42,8 +42,7 @@ public class Sistema {
     
     public static void carregarArquivo(File arquivo) throws FileNotFoundException, IOException{        
         try 
-        {
-     
+        {     
             int i = 0;
             String linha;
             FileReader leitor = new FileReader(arquivo);
@@ -161,9 +160,25 @@ public class Sistema {
         rede.removerTodosVertices();
     }
     
-    public static List<Vertice> menorRotaEntre(String origem, String destino)
-    {
-        return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
+    public static String menorRotaEntre(String origem, String destino)
+    {         
+        String rota = ""; 
+        for(Vertice v : rede.getCaminhoMaisCurtoEntreVertices(origem, destino)){
+                rota += v.getNome();
+         }
+        return rota;
+    }
+    
+    public static double calcularCoordenadasEuclidianas(String equipamento1, String equipamento2){
+        Vertice v1 = rede.buscarVertice(equipamento1);
+        // Verifica se o equipamento 1 existe
+        if (v1 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento1);        
+        Vertice v2 = rede.buscarVertice(equipamento2);
+        // Verifica se o equipamento 2 existe
+        if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
+        if(v1 != null && v2 != null)
+            return Math.sqrt(Math.pow(v1.getX()-v2.getX(), 2) - Math.pow(v1.getY() - v2.getY(), 2) );
+        return -1;
     }
     
 

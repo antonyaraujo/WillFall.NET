@@ -77,6 +77,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         identificarCaminhos = new javax.swing.JButton();
         adicionarConexao = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        calcularDistanciaEuclidiana = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
         carregarArquivo = new javax.swing.JMenuItem();
@@ -140,24 +141,33 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
             }
         });
 
+        calcularDistanciaEuclidiana.setText("Distância Euclidiana");
+        calcularDistanciaEuclidiana.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calcularDistanciaEuclidianaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout painelOpcoesLayout = new javax.swing.GroupLayout(painelOpcoes);
         painelOpcoes.setLayout(painelOpcoesLayout);
         painelOpcoesLayout.setHorizontalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
+            .addGroup(painelOpcoesLayout.createSequentialGroup()
                 .addContainerGap(28, Short.MAX_VALUE)
                 .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
                         .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(38, 38, 38))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(removerEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(resetarRedeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(resetarRedeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(removerEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(calcularDistanciaEuclidiana, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(18, 18, 18))))
         );
         painelOpcoesLayout.setVerticalGroup(
@@ -170,12 +180,14 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                 .addGap(18, 18, 18)
                 .addComponent(adicionarConexao)
                 .addGap(18, 18, 18)
-                .addComponent(resetarRedeButton)
+                .addComponent(calcularDistanciaEuclidiana)
                 .addGap(18, 18, 18)
                 .addComponent(identificarCaminhos)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(resetarRedeButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
                 .addComponent(Botao_sair)
                 .addContainerGap())
         );
@@ -349,6 +361,14 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void calcularDistanciaEuclidianaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcularDistanciaEuclidianaActionPerformed
+        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A");
+        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B");
+        double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
+        if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
+                equipamento1 + " e " + equipamento2 + " é: \n" + valor);
+    }//GEN-LAST:event_calcularDistanciaEuclidianaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -397,6 +417,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JButton adicionarEquipamentoButton;
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
+    private javax.swing.JButton calcularDistanciaEuclidiana;
     private javax.swing.JMenuItem carregarArquivo;
     private javax.swing.JCheckBoxMenuItem exibirPesos;
     private javax.swing.JMenu grafo;
