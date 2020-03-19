@@ -88,7 +88,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               <Component id="painelOpcoes" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="23" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -114,16 +114,14 @@
                           <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="resetarRedeButton" min="-2" pref="175" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="removerEquipamentoButton" max="32767" attributes="0"/>
-                                  <Component id="adicionarEquipamentoButton" max="32767" attributes="0"/>
-                                  <Component id="adicionarConexao" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="identificarCaminhos" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="jButton1" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="calcularDistanciaEuclidiana" alignment="1" max="32767" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="removerEquipamentoButton" max="32767" attributes="0"/>
+                              <Component id="adicionarEquipamentoButton" max="32767" attributes="0"/>
+                              <Component id="adicionarConexao" alignment="1" max="32767" attributes="0"/>
+                              <Component id="identificarCaminhos" alignment="1" max="32767" attributes="0"/>
+                              <Component id="jButton1" alignment="1" max="32767" attributes="0"/>
+                              <Component id="calcularDistanciaEuclidiana" alignment="1" max="32767" attributes="0"/>
+                              <Component id="resetarRedeButton" alignment="1" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       </Group>
@@ -134,7 +132,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                   <Component id="adicionarEquipamentoButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="removerEquipamentoButton" min="-2" max="-2" attributes="0"/>
@@ -142,11 +140,11 @@
                   <Component id="adicionarConexao" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="calcularDistanciaEuclidiana" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                   <Component id="identificarCaminhos" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="resetarRedeButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="218" max="32767" attributes="0"/>
                   <Component id="Botao_sair" min="-2" max="-2" attributes="0"/>

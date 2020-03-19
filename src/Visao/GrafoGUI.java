@@ -141,7 +141,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
                 if (!primeiroMenorRota) {
                     primeiroString = bt_equipamento.getName();
                     JOptionPane.showMessageDialog(null, "VERTICE A: " + primeiroString);
-                    grafo.calcularMenoresDistancias(grafo.buscarVertice(primeiroString));
+                    
                     primeiroMenorRota = true;
                     JOptionPane.showMessageDialog(null, "Selecione outro terminal!");                    
                 }                
@@ -178,6 +178,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
 
     public void calculadorMenorRota() {
         if(primeiroMenorRota && segundoMenorRota){
+            grafo.calcularMenoresDistancias(grafo.buscarVertice(primeiroString));
             String s = Sistema.menorRotaEntre(primeiroString, segundoString);            
             JOptionPane.showMessageDialog(null, "A melhor rota entre " + primeiroString + " e " + segundoString + " é: \n" + s);
             primeiroMenorRota = false;
