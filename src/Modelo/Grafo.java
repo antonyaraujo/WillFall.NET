@@ -3,19 +3,22 @@ package Modelo;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  *
  * @author antony
  */
-public class Grafo {
+public class Grafo implements Observable {
     private ArrayList<Vertice> vertices;
     private ArrayList<Aresta> arestas;    
+    private List<Observer> observers;
     
     public Grafo(){
         vertices = new ArrayList<Vertice>();
-        arestas = new ArrayList<Aresta>();        
+        arestas = new ArrayList<Aresta>();
+        observers = new ArrayList<>();
     }            
     
     public int getNumVertices(){
@@ -46,25 +49,26 @@ public class Grafo {
         if(buscarVertice(nome) == null){
             vertices.add(new Vertice(nome));        
         }
+        notifyObservers();
     }
     
     public void adicionarVertice(String nome, boolean terminal, int x, int y){
         if(buscarVertice(nome) == null){
             vertices.add(new Vertice(nome, terminal, x, y));        
         }
+        notifyObservers();
     }
     
     public void adicionarAresta(String origem, String destino,  double peso){
-        adicionarVertice(origem);
-        adicionarVertice(destino);
         Vertice Origem = buscarVertice(origem);
-       
-        Vertice Destino = buscarVertice(destino);        
-                
+        Vertice Destino = buscarVertice(destino);
+        if(Origem ==null|| Destino==null)
+            return;
         Aresta aresta = new Aresta(Origem, Destino, peso);
         Origem.addVizinho(aresta);
         Destino.addVizinho(aresta);
         arestas.add(aresta);
+        notifyObservers();
     }
     
     
@@ -141,26 +145,41 @@ public class Grafo {
         if (v == null)
             return false;                        
         
-        ArrayList<Integer> indices = buscarArestas(nome);
-        
-        for(int i = 0; i < indices.size(); i++){            
-                arestas.get(i).getOrigem().getArestas().remove(v.getArestas().get(i));
-                arestas.get(i).getDestino().getArestas().remove(v.getArestas().get(i));
-            }
-        
-        for (int i = 0; i < indices.size(); i++)
-        {
-           arestas.remove(i);            
-        }
-                
-        vertices.remove(v);        
+        vertices.remove(v);
+        for (Aresta a: v.getArestas())
+            removerAresta(a);
+        notifyObservers();
         return true;
+    }
+    
+    private void removerAresta(Aresta a)
+    {
+        arestas.remove(a);
+        for (Vertice v:vertices)
+            v.getArestas().remove(a);
     }
     
     public void removerTodosVertices()
     {
         vertices.clear();
         arestas.clear();
+        notifyObservers();
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+       observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer o : observers)
+            o.update(this);
     }
 
 }

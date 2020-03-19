@@ -26,19 +26,17 @@ import javax.swing.JScrollPane;
  * @author antony
  */
 public class GUI extends javax.swing.JFrame implements Modelo.Observable{
-    private Sistema sys;
     private GrafoGUI painel;
     private ArrayList<Observer> observers;
     /**
      * Creates new form GUI
      */
     
-    public GUI() throws IOException {        
-        this.sys = new Sistema();             
+    public GUI() throws IOException {                     
         initComponents();
         pack();                                 
-        this.setSize(1200, 700);                  
-        painel = new GrafoGUI(sys.getGrafo());
+        this.setSize(1200, 720);                  
+        painel = new GrafoGUI();
         getContentPane().add(painel);         
         painel.setLocation(36, painelOpcoes.getY());
         painel.setSize(this.getWidth()-painelOpcoes.getWidth()-100, painelOpcoes.getHeight());        
@@ -78,6 +76,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         resetarRedeButton = new javax.swing.JButton();
         identificarCaminhos = new javax.swing.JButton();
         adicionarConexao = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
         carregarArquivo = new javax.swing.JMenuItem();
@@ -134,12 +133,19 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
             }
         });
 
+        jButton1.setText("Visualizar Menor Rota");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout painelOpcoesLayout = new javax.swing.GroupLayout(painelOpcoes);
         painelOpcoes.setLayout(painelOpcoesLayout);
         painelOpcoesLayout.setHorizontalGroup(
             painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
+                .addContainerGap(28, Short.MAX_VALUE)
                 .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
                         .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -150,7 +156,8 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                             .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(resetarRedeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18))))
         );
         painelOpcoesLayout.setVerticalGroup(
@@ -166,7 +173,9 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                 .addComponent(resetarRedeButton)
                 .addGap(18, 18, 18)
                 .addComponent(identificarCaminhos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
                 .addComponent(Botao_sair)
                 .addContainerGap())
         );
@@ -239,17 +248,19 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         JFileChooser fc = new JFileChooser();
         fc.showOpenDialog(this);
         try {
-            sys.carregarArquivo(fc.getSelectedFile());
+            Sistema.carregarArquivo(fc.getSelectedFile());
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         painel.repaint();
+        System.gc();
     }//GEN-LAST:event_carregarArquivoActionPerformed
 
     private void adicionarEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoButtonActionPerformed
         Object[] opcoes = {"Roteador", "Computador", "Internet"};                   
         painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                  
-        painel.repaint();       
+        painel.repaint();  
+        System.gc();
     }//GEN-LAST:event_adicionarEquipamentoButtonActionPerformed
 
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
@@ -257,7 +268,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         fc.setDialogTitle("Exportar Arquivo de Configuração");                
         fc.showDialog(this, "Salvar");        
         try {
-                sys.salvarArquivo(fc.getSelectedFile().getPath());
+                Sistema.salvarArquivo(fc.getSelectedFile().getPath());
         } catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }        
@@ -266,14 +277,15 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
 
     private void removerEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoButtonActionPerformed
         String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();                          
-        if(sys.removerVertice(nome))
+        if(Sistema.removerVertice(nome))
                 JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!");        
         painel.removeAll();
         painel.repaint();
+        System.gc();
     }//GEN-LAST:event_removerEquipamentoButtonActionPerformed
 
     private void resetarRedeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeButtonActionPerformed
-        sys.resetarRede();       
+        Sistema.resetarRede();       
         painel.removeAll();
         painel.validate();
         painel.repaint(); 
@@ -289,12 +301,12 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                      return;
                 int peso = (Integer.parseInt(JOptionPane.showInputDialog(null,"Digite o peso da conexão","Peso", 1)));
                     
-                sys.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);                                                                     
+                Sistema.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);                                                                     
     }//GEN-LAST:event_adicionarConexaoActionPerformed
 
     private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
         String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó");
-        JScrollPane barraRolagem = sys.identificarMelhorCaminho(computador);
+        JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(computador);
         JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
         exibir.add(barraRolagem);
         JButton salvar = new JButton("Salvar");
@@ -317,6 +329,25 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
             
         }
     }//GEN-LAST:event_exibirPesosActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String origem = JOptionPane.showInputDialog("Digite o rótulo do terminal de partida");
+        if(!Sistema.getGrafo().buscarVertice(origem).isTerminal()) 
+        {
+            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
+            return;
+        }   
+        String destino = JOptionPane.showInputDialog("Digite o rótulo do terminal de destino");
+        if(!Sistema.getGrafo().buscarVertice(destino).isTerminal()) {
+            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
+            return;
+        }
+        JOptionPane.showMessageDialog(null, Sistema.menorRotaEntre(origem, destino));
+        
+        
+        
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -370,6 +401,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JCheckBoxMenuItem exibirPesos;
     private javax.swing.JMenu grafo;
     private javax.swing.JButton identificarCaminhos;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel painelOpcoes;
     private javax.swing.JButton removerEquipamentoButton;
     private javax.swing.JButton resetarRedeButton;

@@ -16,8 +16,6 @@ public class Aresta {
         this.origem = origem;
         this.destino = destino;
     }
-
-    
     
     public double getPeso() {
         return peso;
@@ -42,7 +40,7 @@ public class Aresta {
     public void setDestino(Vertice destino) {
         this.destino = destino;
     }
-    
+   
     
   
 }

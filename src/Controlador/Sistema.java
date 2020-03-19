@@ -21,21 +21,26 @@ import javax.swing.JTable;
  * @author antony
  */
 public class Sistema {
-    Grafo rede = new Grafo();
+    static Grafo rede = new Grafo();
     
     public Sistema() throws IOException{        
     }
     
-    public boolean adicionarAresta(String inicio,String destino, double peso){                        
+    public static void adicionarVertice(String nome, boolean terminal, int x, int y)
+    {
+        rede.adicionarVertice(nome, terminal, x, y);
+    }
+    
+    public static boolean adicionarAresta(String inicio,String destino, double peso){                        
         rede.adicionarAresta(inicio, destino, peso);
         return true;
     }
     
-    public List<Vertice> melhorCaminho(String origem, String destino){   
+    public static List<Vertice> melhorCaminho(String origem, String destino){   
         return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
     }
     
-    public void carregarArquivo(File arquivo) throws FileNotFoundException, IOException{        
+    public static void carregarArquivo(File arquivo) throws FileNotFoundException, IOException{        
         try 
         {
      
@@ -84,11 +89,11 @@ public class Sistema {
         }
     }
     
-     public Grafo getGrafo(){
+     public static Grafo getGrafo(){
         return rede;
     }
 
-     public JScrollPane identificarMelhorCaminho(String nome){
+     public static JScrollPane identificarMelhorCaminho(String nome){
          Vertice equipamento = rede.buscarVertice(nome);
          ArrayList<String> colunas = new ArrayList<String>();
             for (int i = 0; i < rede.getNumVertices(); i++) {
@@ -109,7 +114,7 @@ public class Sistema {
             return barraRolagem;
      }
      
-    public void salvarArquivo(String path) throws IOException {
+    public static void salvarArquivo(String path) throws IOException {
        File arquivo = new File(path);
        String vertices="ROTULO;TERMINAL;COORDENADA_X;COORDENADA_Y\n";
        String arestas = "ORIGEM;DESTINO;PESO\n";
@@ -146,15 +151,19 @@ public class Sistema {
         buffer.close();       
     }
     
-    public boolean removerVertice(String nome){
+    public static boolean removerVertice(String nome){
         return rede.removerVertice(nome);
         
     }
     
-    public void resetarRede()
+    public static void resetarRede()
     {
         rede.removerTodosVertices();
-        
+    }
+    
+    public static List<Vertice> menorRotaEntre(String origem, String destino)
+    {
+        return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
     }
     
 

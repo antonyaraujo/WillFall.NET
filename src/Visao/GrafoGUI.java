@@ -5,8 +5,11 @@
  */
 package Visao;
 
+import Controlador.Sistema;
 import Modelo.Aresta;
 import Modelo.Grafo;
+import Modelo.Observable;
+import Modelo.Observer;
 import Modelo.Vertice;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -22,16 +25,13 @@ import javax.swing.*;
  *
  * @author antony
  */
-    public class GrafoGUI extends javax.swing.JPanel{
+    public class GrafoGUI extends javax.swing.JPanel implements Observer{
 
     private int x_novoVertice;
     private int y_novoVertice;
     private boolean clickNoGrafo;
     private Grafo grafo;
-    JPopupMenu popMenu = new JPopupMenu();
     JPopupMenu popMenuTerminal = new JPopupMenu();
-    JMenuItem addVertexMenuItem = new JMenuItem("Adicionar vértice");
-    JMenuItem addEdgeMenuItem = new JMenuItem("Adicionar aresta");
     JTable tableAdjMatrix;
     JScrollPane scrollPane;
     JButton adjMatrixButton;
@@ -41,15 +41,18 @@ import javax.swing.*;
     JLabel click1label=null;
     Object resposta;
     boolean click;
-    JMenuItem caminhos;    
+    JMenuItem caminhos;   
+    JMenuItem menorRota;
+    JPopupMenu menuMenorRota = new JPopupMenu();
+    boolean primeiroMenorRota= false; boolean segundoMenorRota = false;
+    String primeiroString, segundoString;
     /**
      * Creates new form desenhoGrafo
      */
         
-    public GrafoGUI(Grafo grafo) {  
-        this.grafo = grafo;
-        grafoLabel = new JLabel("GRAFO COM " + " VÉRTICES");
-        add(grafoLabel);
+    public GrafoGUI() {
+        Sistema.getGrafo().registerObserver(this);
+        this.grafo = Sistema.getGrafo();
         adjMatrixButton = new JButton("Visualizar Matrix de Adjacência");
         add(adjMatrixButton);
         adjMatrixButton.addActionListener(new ActionListener() {
@@ -58,26 +61,22 @@ import javax.swing.*;
                 adjMatrix();
             }
         });
-        popMenu.add(addVertexMenuItem);
-        popMenu.add(addEdgeMenuItem);
-        add(popMenu);
-        popUpMenu();
         caminhos = new JMenuItem("Ver melhores caminhos");
-        popMenuTerminal.add(caminhos);        
+        menorRota = new JMenuItem("Visualizar menor rota para outro terminal");
+        menuMenorRota.add(menorRota);
+        //popMenuTerminal.add(caminhos);   
+        
         clickNoGrafo = false;
         initComponents();
         setVisible(true);   
     }
-    
-    public Grafo getGrafo(){
-        return grafo;
-    }       
+         
         
     public void adicionarEquipamentoMouse(Object tipoEquipamento){ 
         resposta = tipoEquipamento;
         if (resposta == null)
             return;
-        clickNoGrafo = true;                                
+        clickNoGrafo = true;    
         addMouseListener(new MouseAdapter() 
         {            
             public void mouseClicked(MouseEvent e)
@@ -93,11 +92,11 @@ import javax.swing.*;
                         return;
                     }
                     else nomeEquipamento = nomeEquipamento.toUpperCase();
-                    if (resposta.equals("Roteador")){                        
-                        grafo.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);                                      
+                    if (resposta.equals("Roteador")){
+                        Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);                                     
                     }
                     else if (resposta.equals("Computador")){
-                        grafo.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);                                                             
+                        Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);                                                            
                     }
                     adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));                                        
                     clickNoGrafo = false;                    
@@ -112,13 +111,13 @@ import javax.swing.*;
         bt_equipamento.setName(equipamento.getNome().toUpperCase());        
         this.add(equipamento.getNome(), bt_equipamento);        
         bt_equipamento.setLocation(equipamento.getX(), equipamento.getY());
-        bt_equipamento.setSize(50, 50);        
+        bt_equipamento.setSize(35, 35);        
         ImageIcon img, selecionado;        
         if(!equipamento.isTerminal()){
-            img = new ImageIcon("imagens/roteador.png");
-            selecionado = new ImageIcon("imagens/roteador2.png");
-            bt_equipamento.setIcon(new ImageIcon(img.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));
-            bt_equipamento.setSelectedIcon(new ImageIcon(selecionado.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));            
+           img = new ImageIcon("imagens/roteador.png");
+           selecionado = new ImageIcon("imagens/roteador2.png");
+           bt_equipamento.setIcon(new ImageIcon(img.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));
+           bt_equipamento.setSelectedIcon(new ImageIcon(selecionado.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));            
         }
         else{
             img = new ImageIcon("imagens/terminal.png");
@@ -144,7 +143,9 @@ import javax.swing.*;
         rotulo.setVisible(true);            
         this.add(rotulo);                   
         this.repaint();        
-        popMenuEquipamento(equipamento, bt_equipamento);        
+        //popMenuEquipamento(equipamento, bt_equipamento); 
+        if (equipamento.isTerminal())
+            popMenuTerminal(bt_equipamento, equipamento);
         this.initComponents();        
     }
     
@@ -192,51 +193,45 @@ import javax.swing.*;
         
     }
     
-        
-        
-    private void popUpMenu()
-    {        
-        addMouseListener(new MouseAdapter() 
+    private void popMenuTerminal(JButton button, Vertice v)
+    {
+        button.addMouseListener(new MouseAdapter() 
         {
             public void mouseClicked(MouseEvent e)
             {
                 if (e.getButton() == MouseEvent.BUTTON3)
                 {
-                    popMenu.show(e.getComponent(), e.getX(), e.getY());
-                    x_novoVertice = e.getX();
-                    y_novoVertice = e.getY();
+                    menuMenorRota.show(e.getComponent(), e.getX(), e.getY());
                 }                                
             }
                         
         });
-                
-        
-        addVertexMenuItem.addActionListener(new ActionListener() {
+        menorRota.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String label = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do equipamento", "Rótulo", 1).toUpperCase();
-                if (label==null)
-                    return;
-                grafo.adicionarVertice(label, false, x_novoVertice, y_novoVertice);
-                grafoLabel.setText("GRAFO COM " + grafo.getNumVertices() + " VÉRTICES");
-                repaint();
-            }
-               
-        });
-        
-        addEdgeMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nome1 = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do primeiro vértice", "Rótulo", 1).toUpperCase();
-                String nome2 = JOptionPane.showInputDialog(popMenu,"Digite o rótulo do segundo vértice", "Rótulo", 1).toUpperCase();
-                int peso = Integer.parseInt(JOptionPane.showInputDialog(popMenu,"Digite o peso","Peso", 1).toUpperCase());                
-                grafo.adicionarAresta(nome1, nome2, peso);
-                repaint();
+                if(!primeiroMenorRota)
+                {
+                    primeiroString = v.getNome();
+                    primeiroMenorRota = true;
+                }
+                else if (primeiroMenorRota && !segundoMenorRota)
+                {
+                    segundoString = v.getNome();
+                    segundoMenorRota = true;
+                }
+                if (primeiroMenorRota && segundoMenorRota)
+                {
+                    JOptionPane.showMessageDialog(null, Sistema.menorRotaEntre(primeiroString, segundoString));
+                    primeiroMenorRota = false;
+                    segundoMenorRota = false;
+                }
             }
         });
-        
-        
+
     }
+    
+        
+ 
     
     @Override
     public void paintComponent(Graphics g)
@@ -324,6 +319,13 @@ import javax.swing.*;
             .addGap(0, 378, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    @Override
+    public void update(Object grafoAtualizado) {
+        grafo = (Grafo) grafoAtualizado;
+    }
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
