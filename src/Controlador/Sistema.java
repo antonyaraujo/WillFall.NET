@@ -95,21 +95,14 @@ public class Sistema {
      public static JScrollPane identificarMelhorCaminho(String nome){
          Vertice equipamento = rede.buscarVertice(nome);
          ArrayList<String> colunas = new ArrayList<String>();
-            for (int i = 0; i < rede.getNumVertices(); i++) {
-                colunas.add(rede.getVertices().get(i).getNome());
-            }
-            Object[][] dados = new Object[rede.getNumVertices()/2][rede.getNumVertices()];
-            ArrayList<List<Vertice>> lista = rede.matrizMelhorCaminho(equipamento);
-            for (int j = 0; j < lista.size(); j++) {
-                for (int i = 0; i < lista.get(j).size(); i++) {
-                    dados[i][j] = lista.get(j).get(i).getNome();
-                }
-            }            
-            colunas.remove(equipamento.getNome());            
-            JTable tabela = new JTable(dados, colunas.toArray());                                    
+         for(Vertice v: rede.getVertices()){
+             if(v != equipamento)
+                 colunas.add(v.getNome());
+         }
+        
+            JTable tabela = new JTable(rede.matrizMelhorCaminho(equipamento), colunas.toArray());                                    
             tabela.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             JScrollPane barraRolagem = new JScrollPane(tabela);
-            barraRolagem.notifyAll();
             return barraRolagem;
      }
      
@@ -163,9 +156,10 @@ public class Sistema {
     public static String menorRotaEntre(String origem, String destino)
     {         
         String rota = ""; 
+        rede.calcularMenoresDistancias(rede.buscarVertice(origem));
         for(Vertice v : rede.getCaminhoMaisCurtoEntreVertices(origem, destino)){
-                rota += v.getNome();
-         }
+                rota += v.getNome() + " ";
+         }        
         return rota;
     }
     

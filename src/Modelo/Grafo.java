@@ -3,76 +3,79 @@ package Modelo;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author antony
  */
 public class Grafo implements Observable {
+
     private ArrayList<Vertice> vertices;
-    private ArrayList<Aresta> arestas;    
+    private ArrayList<Aresta> arestas;
     private List<Observer> observers;
-    
-    public Grafo(){
-        vertices = new ArrayList<Vertice>();
-        arestas = new ArrayList<Aresta>();
+
+    public Grafo() {
+        vertices = new ArrayList<>();
+        arestas = new ArrayList<>();
         observers = new ArrayList<>();
-    }            
-    
-    public int getNumVertices(){
+    }
+
+    public int getNumVertices() {
         return vertices.size();
     }
-            
-    public Vertice getVertice(int i){
+
+    public Vertice getVertice(int i) {
         return vertices.get(i);
     }
-    
-    public ArrayList<Aresta> getArestas(){
+
+    public ArrayList<Aresta> getArestas() {
         return arestas;
     }
-    
-    public ArrayList<Vertice> getVertices(){
+
+    public ArrayList<Vertice> getVertices() {
         return vertices;
     }
-    
-    public Vertice buscarVertice(String nome){
+
+    public Vertice buscarVertice(String nome) {
         System.out.println(nome);
-        for (Vertice v: vertices)
-            if (v.getNome().equals(nome))
+        for (Vertice v : vertices) {
+            if (v.getNome().equals(nome)) {
                 return v;
+            }
+        }
         return null;
     }
-    
-    public void adicionarVertice(String nome){
-        if(buscarVertice(nome) == null){
-            vertices.add(new Vertice(nome));        
+
+    public void adicionarVertice(String nome) {
+        if (buscarVertice(nome) == null) {
+            vertices.add(new Vertice(nome));
         }
         notifyObservers();
     }
-    
-    public void adicionarVertice(String nome, boolean terminal, int x, int y){
-        if(buscarVertice(nome) == null){
-            vertices.add(new Vertice(nome, terminal, x, y));        
+
+    public void adicionarVertice(String nome, boolean terminal, int x, int y) {
+        if (buscarVertice(nome) == null) {
+            vertices.add(new Vertice(nome, terminal, x, y));
         }
         notifyObservers();
     }
-    
-    public void adicionarAresta(String origem, String destino,  double peso){
+
+    public void adicionarAresta(String origem, String destino, double peso) {
         Vertice Origem = buscarVertice(origem);
         Vertice Destino = buscarVertice(destino);
-        if(Origem ==null|| Destino==null)
+        if (Origem == null || Destino == null) {
             return;
+        }
         Aresta aresta = new Aresta(Origem, Destino, peso);
         Origem.addVizinho(aresta);
         Destino.addVizinho(aresta);
         arestas.add(aresta);
         notifyObservers();
     }
-    
-    
-     public void calcularMenoresDistancias(Vertice origem) {
+
+    public void calcularMenoresDistancias(Vertice origem) {
         origem.setDistanciaMinima(0);
         PriorityQueue<Vertice> filaPrioridade = new PriorityQueue<>();
         filaPrioridade.add(origem);
@@ -91,76 +94,81 @@ public class Grafo implements Observable {
                     v.setAnterior(vertex);
                     v.setDistanciaMinima(minDistance);
                     filaPrioridade.add(v);
-                }                
-            }            
+                }
+            }
         }
+        notifyObservers();
     }
 
     public List<Vertice> getCaminhoMaisCurtoPara(Vertice targetVerte) {
-        List<Vertice> path = new ArrayList<>();
-
+        List<Vertice> path = new ArrayList<>();        
         for (Vertice vertex = targetVerte; vertex != null; vertex = vertex.getAnterior()) {
             path.add(vertex);
-        }        
-        Collections.reverse(path);
-        return path;
-    }       
-    
-    public List<Vertice> getCaminhoMaisCurtoEntreVertices(String origem, String destino)
-    {
-        calcularMenoresDistancias(buscarVertice(origem));
-        return  getCaminhoMaisCurtoPara(buscarVertice(destino));
-    }
-    
-    public ArrayList<List<Vertice>> matrizMelhorCaminho(Vertice vertice){
-        calcularMenoresDistancias(vertice);
-        ArrayList<List<Vertice>> caminhos = new ArrayList<List<Vertice>>();
-        for(Vertice v : vertices){
-            if(!v.getNome().equals(vertice.getNome())){
-                caminhos.add(getCaminhoMaisCurtoPara(v));
-            }
         }
-        return caminhos;
+        Collections.reverse(path);        
+        notifyObservers();
+        return path;
     }
-    
-    private ArrayList<Integer> buscarArestas(String nome)
-    {
+
+    public List<Vertice> getCaminhoMaisCurtoEntreVertices(String origem, String destino) {        
+        calcularMenoresDistancias(buscarVertice(origem));          
+        notifyObservers();
+        return getCaminhoMaisCurtoPara(buscarVertice(destino));
+    }
+
+    public Object[][] matrizMelhorCaminho(Vertice vertice) {
+        calcularMenoresDistancias(vertice);        
+        ArrayList<Vertice> listaV = vertices;
+        listaV.remove(vertice);        
+        Object[][] matriz = new Object[getNumVertices() / 2][getNumVertices()];
+        for (int linha = 0; linha < getNumVertices() / 2; linha++) {
+            for (int coluna = 0; coluna < getNumVertices(); coluna++) {                
+                    if (getCaminhoMaisCurtoPara(listaV.get(coluna)).size() > linha) {
+                        matriz[linha][coluna] = getCaminhoMaisCurtoPara(listaV.get(coluna)).get(linha);
+                   }                
+            }
+        }                
+        notifyObservers();
+        return matriz;        
+    }
+
+    private ArrayList<Integer> buscarArestas(String nome) {
         int index = 0;
         ArrayList<Integer> indices = new ArrayList<Integer>();
-        for (Aresta a: arestas)
-        {
-            if (a.getOrigem().getNome().equals(nome))
+        for (Aresta a : arestas) {
+            if (a.getOrigem().getNome().equals(nome)) {
                 indices.add(index);
-            if (a.getDestino().getNome().equals(nome))
+            }
+            if (a.getDestino().getNome().equals(nome)) {
                 indices.add(index);
+            }
             index++;
         }
-        return indices;   
+        return indices;
     }
-    
-    
-    public boolean removerVertice(String nome)
-    {
+
+    public boolean removerVertice(String nome) {
         Vertice v = buscarVertice(nome);
-        if (v == null)
-            return false;                        
-        
+        if (v == null) {
+            return false;
+        }
+
         vertices.remove(v);
-        for (Aresta a: v.getArestas())
+        for (Aresta a : v.getArestas()) {
             removerAresta(a);
+        }
         notifyObservers();
         return true;
     }
-    
-    private void removerAresta(Aresta a)
-    {
+
+    private void removerAresta(Aresta a) {
         arestas.remove(a);
-        for (Vertice v:vertices)
+        for (Vertice v : vertices) {
             v.getArestas().remove(a);
+        }
     }
-    
-    public void removerTodosVertices()
-    {
+
+    public void removerTodosVertices() {
         vertices.clear();
         arestas.clear();
         notifyObservers();
@@ -173,13 +181,14 @@ public class Grafo implements Observable {
 
     @Override
     public void removeObserver(Observer observer) {
-       observers.remove(observer);
+        observers.remove(observer);
     }
 
     @Override
     public void notifyObservers() {
-        for(Observer o : observers)
+        for (Observer o : observers) {
             o.update(this);
+        }
     }
 
 }

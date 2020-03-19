@@ -317,28 +317,18 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     }//GEN-LAST:event_adicionarConexaoActionPerformed
 
     private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
-        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó");
+        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó").toUpperCase();
         JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(computador);
         JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
-        exibir.add(barraRolagem);
-        JButton salvar = new JButton("Salvar");
-        JButton sair = new JButton("Sair");
-        sair.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                exibir.setVisible(false);
-            }
-        });
+        exibir.add(barraRolagem);                
         exibir.setSize(600, 200);
-        exibir.setVisible(true);
+        exibir.setVisible(true);        
         exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        exibir.setLocationRelativeTo(null);
-        barraRolagem.validate();
-        barraRolagem.repaint();
+        exibir.setLocationRelativeTo(null);        
     }//GEN-LAST:event_identificarCaminhosActionPerformed
 
     private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
-        if(!exibirPesos.isSelected()){
-            
+        if(!exibirPesos.isSelected()){            
         }
     }//GEN-LAST:event_exibirPesosActionPerformed
 
