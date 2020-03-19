@@ -265,8 +265,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private void adicionarEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoButtonActionPerformed
         Object[] opcoes = {"Roteador", "Computador", "Internet"};                   
         painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                  
-        painel.repaint();  
-        System.gc();
+        //painel.repaint();  
     }//GEN-LAST:event_adicionarEquipamentoButtonActionPerformed
 
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
@@ -307,7 +306,8 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                      return;
                 int peso = (Integer.parseInt(JOptionPane.showInputDialog(null,"Digite o peso da conexão","Peso", 1)));
                     
-                Sistema.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);                                                                     
+                Sistema.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);      
+                painel.repaint();
     }//GEN-LAST:event_adicionarConexaoActionPerformed
 
     private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
@@ -322,8 +322,11 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     }//GEN-LAST:event_identificarCaminhosActionPerformed
 
     private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
-        if(!exibirPesos.isSelected()){            
-        }
+        if(!exibirPesos.isSelected())
+            painel.setExibirPeso(false);
+        if (exibirPesos.isSelected())
+            painel.setExibirPeso(true);
+        painel.repaint();
     }//GEN-LAST:event_exibirPesosActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

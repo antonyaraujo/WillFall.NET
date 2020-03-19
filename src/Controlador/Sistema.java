@@ -153,14 +153,9 @@ public class Sistema {
         rede.removerTodosVertices();
     }
     
-    public static String menorRotaEntre(String origem, String destino)
+    public static List<Vertice> menorRotaEntre(String origem, String destino)
     {         
-        String rota = ""; 
-        rede.calcularMenoresDistancias(rede.buscarVertice(origem));
-        for(Vertice v : rede.getCaminhoMaisCurtoEntreVertices(origem, destino)){
-                rota += v.getNome() + " ";
-         }        
-        return rota;
+        return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
     }
     
     public static double calcularCoordenadasEuclidianas(String equipamento1, String equipamento2){

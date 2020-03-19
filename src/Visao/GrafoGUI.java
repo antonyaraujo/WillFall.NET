@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.*;
 
 /**
@@ -36,6 +38,9 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
     JMenuItem caminhos;   
     boolean primeiroMenorRota = false, segundoMenorRota = false;
     String primeiroString, segundoString;
+    boolean destacarRota = false;
+    List<Vertice> menorRotaVertices;
+    boolean exibirPesos = true;
 
     /**
      * Creates new form desenhoGrafo
@@ -45,8 +50,9 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         this.setBackground(Color.WHITE);
         this.grafo = Sistema.getGrafo();
         caminhos = new JMenuItem("Ver melhores caminhos");       
-        //popMenuTerminal.add(caminhos);           
+        popMenuTerminal.add(caminhos);           
         clickNoGrafo = false;
+        
         initComponents();
         setVisible(true);
     }
@@ -56,6 +62,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         if (resposta == null) {
             return;
         }
+        JOptionPane.showMessageDialog(null, "Selecione no painel a localização do novo " + resposta, "Localização", JOptionPane.INFORMATION_MESSAGE);
         clickNoGrafo = true;
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -63,19 +70,16 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
                     x_novoVertice = e.getX();
                     y_novoVertice = e.getY();
                     String nomeEquipamento;
-                    nomeEquipamento = JOptionPane.showInputDialog(null, "Digite o rótulo do equipamento", "Rótulo", 1);
-                    if (nomeEquipamento == null) {
+                    nomeEquipamento = JOptionPane.showInputDialog(null, "Digite o rótulo do equipamento", "Rótulo", 1).toUpperCase();
+                    if (nomeEquipamento == null)
                         clickNoGrafo = false;
-                        return;
-                    } else {
-                        nomeEquipamento = nomeEquipamento.toUpperCase();
-                    }
-                    if (resposta.equals("Roteador")) {
+                    else if (resposta.equals("Roteador")) {
                         Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);
                     } else if (resposta.equals("Computador")) {
                         Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);
                     }
                     adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));
+                    repaint();
                     clickNoGrafo = false;
                 }
             }
@@ -87,8 +91,8 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         bt_equipamento.setName(equipamento.getNome().toUpperCase());
         this.add(equipamento.getNome(), bt_equipamento);
         bt_equipamento.setVisible(true);
-        bt_equipamento.setOpaque(false);
-        bt_equipamento.setContentAreaFilled(false);
+        //bt_equipamento.setOpaque(false);
+        //.setContentAreaFilled(false);
         bt_equipamento.setBorder(null);
         bt_equipamento.setLocation(equipamento.getX(), equipamento.getY());
         bt_equipamento.setSize(35, 35);
@@ -124,8 +128,8 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         rotulo.setSize(100, 10);
         rotulo.setVisible(true);
         this.add(rotulo);
-        this.repaint();
-        //popMenuEquipamento(equipamento, bt_equipamento); 
+        //this.repaint();
+        popMenuEquipamento(equipamento, bt_equipamento); 
         if (equipamento.isTerminal()) {            
             bt_equipamento.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -140,7 +144,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
             public void actionPerformed(ActionEvent e) {
                 if (!primeiroMenorRota) {
                     primeiroString = bt_equipamento.getName();
-                    JOptionPane.showMessageDialog(null, "VERTICE A: " + primeiroString);
+                    JOptionPane.showMessageDialog(null, "TERMINAL SELECIONADO: " + primeiroString);
                     
                     primeiroMenorRota = true;
                     JOptionPane.showMessageDialog(null, "Selecione outro terminal!");                    
@@ -148,7 +152,6 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
             }
         });
         
-        this.initComponents();
     }
         System.gc();
     }
@@ -178,12 +181,17 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
 
     public void calculadorMenorRota() {
         if(primeiroMenorRota && segundoMenorRota){
-            grafo.calcularMenoresDistancias(grafo.buscarVertice(primeiroString));
-            String s = Sistema.menorRotaEntre(primeiroString, segundoString);            
-            JOptionPane.showMessageDialog(null, "A melhor rota entre " + primeiroString + " e " + segundoString + " é: \n" + s);
-            primeiroMenorRota = false;
-            segundoMenorRota = false;
+            //grafo.calcularMenoresDistancias(grafo.buscarVertice(primeiroString));
+            menorRotaVertices = Sistema.menorRotaEntre(primeiroString, segundoString);
+            destacarRota = true;
+            repaint();
+            JOptionPane.showMessageDialog(null, "A melhor rota entre " + primeiroString + " e " + segundoString + " está destacada no Grafo\n"
+                    + "Pressione OK para não destacar mais a rota.");
+            repaint();
         }
+        menorRotaVertices.clear();
+        primeiroMenorRota = false;
+        segundoMenorRota = false;
         System.gc();        
     }
 
@@ -191,6 +199,10 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         paintGraph(g);
+        if(destacarRota)
+            paintMenorRota(g);
+        if(exibirPesos)
+            exibirPesos(g);
     }
 
     private void paintGraph(Graphics g) {
@@ -199,14 +211,32 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
             adicionarEquipamento(v);
         }
 
+        
         ArrayList<Aresta> arestas = grafo.getArestas();
         for (int i = 0; i < arestas.size(); i++) {
             g.drawLine(arestas.get(i).getOrigem().getX() + 15, arestas.get(i).getOrigem().getY() + 20,
                     arestas.get(i).getDestino().getX() + 15,
                     arestas.get(i).getDestino().getY() + 20);
-            exibirPesos(g);
         }
     }
+    
+    private void paintMenorRota(Graphics g)
+    {
+        g.setColor(Color.red);
+        for (int i = 0; i<menorRotaVertices.size()-1; i++)
+        {
+            Vertice v1 = menorRotaVertices.get(i);
+            Vertice v2 = menorRotaVertices.get(i+1);
+            g.drawLine(v1.getX()+15, v1.getY()+20, v2.getX()+15, v2.getY()+20);
+        }
+        g.setColor(Color.black);
+        destacarRota = false;
+    }
+    
+    public void setExibirPeso(boolean e){
+       exibirPesos = e;
+    }
+  
 
     public void exibirPesos(Graphics g) {
         ArrayList<Aresta> arestas = grafo.getArestas();

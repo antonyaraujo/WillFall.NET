@@ -39,7 +39,7 @@ public class Grafo implements Observable {
     }
 
     public Vertice buscarVertice(String nome) {
-        System.out.println(nome);
+       // System.out.println(nome);
         for (Vertice v : vertices) {
             if (v.getNome().equals(nome)) {
                 return v;
