@@ -91,6 +91,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         bt_equipamento.setName(equipamento.getNome().toUpperCase());
         this.add(equipamento.getNome(), bt_equipamento);
         bt_equipamento.setVisible(true);
+        bt_equipamento.setBackground(Color.WHITE);
         //bt_equipamento.setOpaque(false);
         //.setContentAreaFilled(false);
         bt_equipamento.setBorder(null);
@@ -191,8 +192,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         }
         menorRotaVertices.clear();
         primeiroMenorRota = false;
-        segundoMenorRota = false;
-        System.gc();        
+        segundoMenorRota = false;        
     }
 
     @Override
