@@ -12,11 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -38,6 +40,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         painel.setLocation(36, painelOpcoes.getY());
         painel.setSize(this.getWidth()-painelOpcoes.getWidth()-100, painelOpcoes.getHeight());        
         this.setLocationRelativeTo(null);
+        estadoBotoes(false);
         observers = new ArrayList();                          
     }
 
@@ -57,6 +60,12 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     }
         
     
+    private void estadoBotoes(boolean estado){
+        calcularDistanciaEuclidiana.setEnabled(estado);
+        identificarCaminhos.setEnabled(estado);
+        menorRota.setEnabled(estado);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -73,7 +82,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         resetarRedeButton = new javax.swing.JButton();
         identificarCaminhos = new javax.swing.JButton();
         adicionarConexao = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        menorRota = new javax.swing.JButton();
         calcularDistanciaEuclidiana = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
@@ -134,10 +143,10 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
             }
         });
 
-        jButton1.setText("Visualizar Menor Rota");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        menorRota.setText("Visualizar Menor Rota");
+        menorRota.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                menorRotaActionPerformed(evt);
             }
         });
 
@@ -164,7 +173,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                             .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(menorRota, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(calcularDistanciaEuclidiana, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(resetarRedeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18))))
@@ -183,7 +192,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                 .addGap(18, 18, 18)
                 .addComponent(identificarCaminhos)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(menorRota)
                 .addGap(18, 18, 18)
                 .addComponent(resetarRedeButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
@@ -280,12 +289,15 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         }
         painel.repaint();
         System.gc();
+        if(Sistema.getGrafo().getNumVertices() >= 30)
+            estadoBotoes(true);
     }//GEN-LAST:event_carregarArquivoActionPerformed
 
     private void adicionarEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoButtonActionPerformed
         Object[] opcoes = {"Roteador", "Computador", "Internet"};                   
         painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                  
-        //painel.repaint();  
+        if(Sistema.getGrafo().getNumVertices() >= 30)
+            estadoBotoes(true);
     }//GEN-LAST:event_adicionarEquipamentoButtonActionPerformed
 
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
@@ -306,6 +318,8 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                 JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!");        
         painel.removeAll();
         painel.repaint();
+        if(Sistema.getGrafo().getNumVertices() < 30)
+            estadoBotoes(false);
         System.gc();
     }//GEN-LAST:event_removerEquipamentoButtonActionPerformed
 
@@ -317,17 +331,21 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     }//GEN-LAST:event_resetarRedeButtonActionPerformed
 
     private void adicionarConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoActionPerformed
-        
-                String r1 = JOptionPane.showInputDialog(null,"Digite o rótulo do primeiro equipamento", "Rótulo", 1);
-                if (r1==null)
-                    return;
-                String r2 = JOptionPane.showInputDialog(null,"Digite o rótulo do segundo equipamento", "Rótulo", 1);
-                if (r2==null)
-                     return;
-                int peso = (Integer.parseInt(JOptionPane.showInputDialog(null,"Digite o peso da conexão","Peso", 1)));
-                    
-                Sistema.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);      
-                painel.repaint();
+      
+        String r1 = JOptionPane.showInputDialog(null, "Digite o rótulo do primeiro equipamento", "Rótulo", 1);
+        if (r1 == null) {
+            return;
+        }
+        String r2 = JOptionPane.showInputDialog(null, "Digite o rótulo do segundo equipamento", "Rótulo", 1);
+        if (r2 == null) {
+            return;
+        }        
+        int peso = (Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o peso da conexão", null)));                
+        Sistema.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);
+        int opcao = JOptionPane.showConfirmDialog(null, "A conexão deve ser bidirecional?");
+        if(opcao == JOptionPane.YES_OPTION)
+            Sistema.adicionarAresta(r2.toUpperCase(), r1.toUpperCase(), peso);
+        painel.repaint();        
     }//GEN-LAST:event_adicionarConexaoActionPerformed
 
     private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
@@ -349,7 +367,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         painel.repaint();
     }//GEN-LAST:event_exibirPesosActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void menorRotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menorRotaActionPerformed
         String origem = JOptionPane.showInputDialog("Digite o rótulo do terminal de partida");
         if(!Sistema.getGrafo().buscarVertice(origem).isTerminal()) 
         {
@@ -366,7 +384,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         
         
         
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_menorRotaActionPerformed
 
     private void calcularDistanciaEuclidianaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcularDistanciaEuclidianaActionPerformed
         String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A");
@@ -377,18 +395,26 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     }//GEN-LAST:event_calcularDistanciaEuclidianaActionPerformed
 
     private void detalhesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detalhesActionPerformed
-        JFrame detalhes = new JFrame("WillFall.NET");
-        detalhes.setSize(100, 250);
+        JFrame detalhes = new JFrame("WillFall.NET");        
+        
         JLabel titulo = new JLabel("WillFall.NET");
         titulo.setFont(new Font("Serif", Font.BOLD, 25));
         titulo.setLocation(10, detalhes.getY()/2);
-        JLabel info = new JLabel("Desenvolvido por Antony Araújo e Anderson Lima \n<b>Disciplina:<\b> MI - Programação"
+        JLabel info = new JLabel();
+        info.setText("<html> <b>Desenvolvido por</b> Antony Araújo e Anderson Lima \n Disciplina: MI - Programação"
                 + "\nTutor: Carlos Rodrigues");
-        info.setFont(new Font("Serif", Font.BOLD, 25));
-        info.setLocation(25, detalhes.getY()/2);
+        info.setSize(200, 250);
         detalhes.add(titulo);
         detalhes.add(info);
+        detalhes.pack();
+detalhes.setSize(200, 250);        
+        //info.setLocation(25, detalhes.getY()/2);
+        titulo.setLocation(10, detalhes.getY()/2);
+        titulo.setVisible(true);
+        info.setVisible(true);
         detalhes.setVisible(true);
+        detalhes.setDefaultCloseOperation(DISPOSE_ON_CLOSE); 
+        detalhes.setLocationRelativeTo(null);detalhes.pack();
     }//GEN-LAST:event_detalhesActionPerformed
 
     /**
@@ -446,7 +472,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JCheckBoxMenuItem exibirPesos;
     private javax.swing.JMenu grafo;
     private javax.swing.JButton identificarCaminhos;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton menorRota;
     private javax.swing.JPanel painelOpcoes;
     private javax.swing.JButton removerEquipamentoButton;
     private javax.swing.JButton resetarRedeButton;

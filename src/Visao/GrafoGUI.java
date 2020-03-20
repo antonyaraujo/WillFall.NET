@@ -13,9 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 /**
  *
@@ -107,9 +107,11 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
             img = new ImageIcon("imagens/terminal.png");
             bt_equipamento.setIcon(new ImageIcon(img.getImage().getScaledInstance(bt_equipamento.getWidth(), bt_equipamento.getHeight(), Image.SCALE_SMOOTH)));
         }
-        JMenuItem menorRota  = new JMenuItem("Visualizar menor rota para outro terminal");;
+        JMenuItem menorRota  = new JMenuItem("Menor Caminho (Terminal)");
+        JMenuItem menorRotaTodos  = new JMenuItem("Menor Caminho (Todos)");
         JPopupMenu menuMenorRota = new JPopupMenu();        
         menuMenorRota.add(menorRota);
+        menuMenorRota.add(menorRotaTodos);
         bt_equipamento.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,6 +154,20 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
                 }                
             }
         });
+        
+        menorRotaTodos.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){                
+                JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(equipamento.getNome());
+                JFrame exibir = new JFrame("Caminhos menos custosos do " + equipamento.getNome());
+                exibir.add(barraRolagem);
+                exibir.setSize(600, 200);
+                exibir.setVisible(true);
+                exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                exibir.setLocationRelativeTo(null);
+            }
+        });
+        
         
     }
         System.gc();
@@ -216,7 +232,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         for (int i = 0; i < arestas.size(); i++) {
             g.drawLine(arestas.get(i).getOrigem().getX() + 15, arestas.get(i).getOrigem().getY() + 20,
                     arestas.get(i).getDestino().getX() + 15,
-                    arestas.get(i).getDestino().getY() + 20);
+                   arestas.get(i).getDestino().getY() + 20);                        
         }
     }
     
@@ -243,7 +259,8 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer {
         for (int i = 0; i < arestas.size(); i++) {
             g.drawString(String.valueOf(arestas.get(i).getPeso()), (arestas.get(i).getDestino().getX() + arestas.get(i).getOrigem().getX()) / 2, (arestas.get(i).getOrigem().getY() + arestas.get(i).getDestino().getY()) / 2);
         }
-    }    
+    }
+   
 
     /**
      * This method is called from within the constructor to initialize the form.

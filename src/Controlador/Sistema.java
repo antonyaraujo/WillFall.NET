@@ -101,7 +101,8 @@ public class Sistema {
          }
         
             JTable tabela = new JTable(rede.matrizMelhorCaminho(equipamento), colunas.toArray());                                    
-            tabela.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+            tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            tabela.setAutoResizeMode(0);
             JScrollPane barraRolagem = new JScrollPane(tabela);
             return barraRolagem;
      }
