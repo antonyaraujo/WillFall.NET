@@ -105,53 +105,15 @@ public class Grafo implements Observable {
             path.add(vertex);
         }
         for(Vertice v : vertices){
-            v.setAnterior(null);
-            v.setDistanciaMinima(0);
-            v.setVisited(false);            
+            v.reset();
         }
         Collections.reverse(path); 
         return path;
     }
 
     public List<Vertice> getCaminhoMaisCurtoEntreVertices(String Origem, String Destino) {        
-        Vertice origem = buscarVertice(Origem);
-        Vertice destino = buscarVertice(Destino);
-                
-        origem.setDistanciaMinima(0);
-        PriorityQueue<Vertice> filaPrioridade = new PriorityQueue<>();
-        filaPrioridade.add(origem);
-
-        while (!filaPrioridade.isEmpty()) {
-            Vertice vertex = filaPrioridade.poll();
-
-            for (Aresta aresta : vertex.getArestas()) {
-                Vertice v = aresta.getDestino();
-                //Vertice u = edge.getStartVertice();
-                double weight = aresta.getPeso();
-                double minDistance = vertex.getDistanciaMinima() + weight;
-
-                if (minDistance < v.getDistanciaMinima()) {
-                    filaPrioridade.remove(vertex);
-                    v.setAnterior(vertex);
-                    v.setDistanciaMinima(minDistance);
-                    filaPrioridade.add(v);
-                }
-            }
-        }        
-        filaPrioridade.clear();        
-        List<Vertice> path = new ArrayList<>();        
-        for (Vertice vertex = destino; vertex != null; vertex = vertex.getAnterior()) {
-            path.add(vertex);
-       }
-        
-        for(Vertice v : vertices){
-            v.setAnterior(null);            
-            v.setVisited(false);            
-        }
-        
-        notifyObservers();
-        Collections.reverse(path);        
-        return path;
+        calcularMenoresDistancias(buscarVertice(Origem));
+        return  getCaminhoMaisCurtoPara(buscarVertice(Destino));
     }
 
     public Object[][] matrizMelhorCaminho(Vertice vertice) {

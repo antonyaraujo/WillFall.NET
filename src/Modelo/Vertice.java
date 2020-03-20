@@ -93,7 +93,12 @@ public class Vertice implements Comparable<Vertice>{
         this.terminal = terminal;
     }
     
-    
+    public void reset()
+    {
+        visitado = false;
+        anterior = null;
+        distanciaMinima = Double.MAX_VALUE;
+    }
     
     @Override
     public String toString() {
