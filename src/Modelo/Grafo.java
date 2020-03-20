@@ -12,55 +12,112 @@ import javax.swing.JOptionPane;
  */
 public class Grafo implements Observable {
 
-    private ArrayList<Vertice> vertices;
-    private ArrayList<Aresta> arestas;
+    private ArrayList<Vertice> vertices; // Armazena os vertices existentes no Grafo
+    private ArrayList<Aresta> arestas; // Armazena as arestas existentes no Grafo
     private List<Observer> observers;
 
     public Grafo() {
-        vertices = new ArrayList<>();
-        arestas = new ArrayList<>();
+        vertices = new ArrayList<>(); // Inicializa a ArrayList vertices
+        arestas = new ArrayList<>(); // Inicializa a ArrayList arestas
         observers = new ArrayList<>();
     }
 
+    /**
+     * Metodo que retorna o valor referente ao tamanho da ArrayList vertices
+     *
+     * @return inteiro que representa a quantidade de vertices que o grafo
+     * possui
+     */
     public int getNumVertices() {
         return vertices.size();
     }
 
+    /**
+     * Metodo que retorna um vertice do ArrayList vertices
+     *
+     * @param i - recebe um inteiro que identifica a posicao do vertice desejado
+     * @return vertice - retorna o vertice que ocupa a posicao i na ArrayList
+     * vertice
+     * @return null - nao ha retorno se a posicao informada for invalida
+     */
     public Vertice getVertice(int i) {
-        return vertices.get(i);
+        if (i < getNumVertices() && i > -1) {
+            return vertices.get(i);
+        } else {
+            return null;
+        }
     }
 
-    public ArrayList<Aresta> getArestas() {
-        return arestas;
-    }
-
+    /**
+     * Metodo que retorna todos os vertices do grafo
+     *
+     * @return ArrayList de objetos do tipo Vertice
+     */
     public ArrayList<Vertice> getVertices() {
         return vertices;
     }
 
+    /**
+     * Metodo que retorna um vertice a partir do nome     
+     * @param nome - nome dado ao objeto do tipo Vertice que deseja ser
+     * encontrado
+     * @return v - vertice cujo nome e igual ao nome passado como parametro
+     * @return null - o retorno e null se nao existe vertice com nome
+     * equivalente
+     */
     public Vertice buscarVertice(String nome) {
-        for (Vertice v : vertices) {
-            if (v.getNome().equals(nome)) {
+        for (Vertice v : vertices) { // For each que percorre todos os vertices da ArrayList Vertices
+            if (v.getNome().equals(nome)) { // Verifica se o nome passado como parametro e igual lexicograficamente ao nome do vertice sendo percorrido
                 return v;
             }
         }
         return null;
     }
 
-    public void adicionarVertice(String nome) {
-        if (buscarVertice(nome) == null) {
-            vertices.add(new Vertice(nome));
-        }
-        notifyObservers();
-    }
-
+    /**
+     * Metodo que adiciona um Objeto do tipo Vertice a ArrayList de Vertices
+     * @param nome - nome ou rotulo dado ao Vertice
+     * @param terminal - identifica se e um computador (true) ou nao (false)
+     * @param x - posicao x do vertice na tela
+     * @param y - posicao y do vertice na tela
+     * @return nao ha retorno
+     */
     public void adicionarVertice(String nome, boolean terminal, int x, int y) {
-        if (buscarVertice(nome) == null) {
-            vertices.add(new Vertice(nome, terminal, x, y));
+        if (buscarVertice(nome) == null) // Se nao existir vertice com o nome passado, o vertice pode ser criado
+        {
+            vertices.add(new Vertice(nome,
+                    terminal, x, y));
         }
         notifyObservers();
     }
 
+    /**
+     * Metodo que remove um vertice da ArrayList de vertices do grafo a partir do seu nome
+     * @param nome - nome a partir do qual sera identificado o vertice a ser removido
+     * @return true - se o vertice tiver sido encontrado e removido
+     * @return false - se o vertice não tiver sido encontrado e removido
+     */
+    public boolean removerVertice(String nome) {
+        Vertice v = buscarVertice(nome);
+        if (v == null) {
+            return false;
+        }
+
+        vertices.remove(v);
+        for (Aresta a : v.getArestas()) {
+            removerAresta(a);
+        }
+        notifyObservers();
+        return true;
+    }
+    
+    /**
+     * Metodo que adiciona um Objeto do tipo Aresta a ArrayList de arestas
+     * @param origem - nome do vertice de origem
+     * @param destino - nome do vertice de destino
+     * @param peso - valor da conexao entre origem e destino     
+     * @return nao ha retorno
+     */
     public void adicionarAresta(String origem, String destino, double peso) {
         Vertice Origem = buscarVertice(origem);
         Vertice Destino = buscarVertice(destino);
@@ -74,6 +131,51 @@ public class Grafo implements Observable {
         notifyObservers();
     }
 
+    /**
+     * Metodo que retorna todas as arestas do grafo
+     *
+     * @return ArrayList de objetos do tipo Aresta
+     */
+    public ArrayList<Aresta> getArestas() {
+        return arestas;
+    }
+    
+    /**
+     * Metodo que remove um objeto Aresta da ArrayListde arestas do grafo
+     * @param a - Objeto aresta a ser removido da lista
+     */
+    private void removerAresta(Aresta a) {
+        arestas.remove(a);
+        for (Vertice v : vertices) {
+            v.getArestas().remove(a);
+        }
+    }
+    
+    /**
+     * Metodo que retorna todas as arestas que contem um determinado vertice
+     * @param nome - String que possui o nome do vertice a ser buscado
+     * @return ArrayList contendo a posicao na lista de aresta de todas as 
+     * arestas que contem, na origem ou destino, o vertice com o dado nome
+     */
+    private ArrayList<Integer> buscarArestas(String nome) {
+        int index = 0;
+        ArrayList<Integer> indices = new ArrayList<Integer>();
+        for (Aresta a : arestas) {
+            if (a.getOrigem().getNome().equals(nome)) {
+                indices.add(index);
+            }
+            if (a.getDestino().getNome().equals(nome)) {
+                indices.add(index);
+            }
+            index++;
+        }
+        return indices;
+    }
+
+    /**
+     * Metodo que calcula as melhores distancias de um vertice para todos os outros
+     * @param origem - vertice a partir do qual que-se partir para outros
+     */
     public void calcularMenoresDistancias(Vertice origem) {
         origem.setDistanciaMinima(0);
         PriorityQueue<Vertice> filaPrioridade = new PriorityQueue<>();
@@ -95,82 +197,67 @@ public class Grafo implements Observable {
                     filaPrioridade.add(v);
                 }
             }
-        }        
-        filaPrioridade.clear();     
+        }
+        filaPrioridade.clear();
     }
 
+    /**
+     * Metodo que retorna uma lista de Vertices para o menor caminho ate o vertice de destino
+     * @param destino - vertice ate o qual o caminho sera percorrido
+     * @return lista contendo os vertices do menor caminho ate o destino
+     */
     public List<Vertice> getCaminhoMaisCurtoPara(Vertice destino) {
-        List<Vertice> path = new ArrayList<>();        
+        List<Vertice> path = new ArrayList<>();
         for (Vertice vertex = destino; vertex != null; vertex = vertex.getAnterior()) {
             path.add(vertex);
         }
-        for(Vertice v : vertices){
+        for (Vertice v : vertices) {
             v.reset();
         }
-        Collections.reverse(path); 
+        Collections.reverse(path);
         return path;
     }
 
-    public List<Vertice> getCaminhoMaisCurtoEntreVertices(String Origem, String Destino) {        
+    
+    /**
+     * Metodo que retorna uma lista de vertices do menor caminho entre um vertice de origem e outro de destino
+     * @param Origem - nome do vertice a partir do qual o caminho inicia
+     * @param Destino - nome do vertice no qual o caminho se finda
+     * @return lista de vertices com o menor caminho entre origem e destino
+     */
+    public List<Vertice> getCaminhoMaisCurtoEntreVertices(String Origem, String Destino) {
         calcularMenoresDistancias(buscarVertice(Origem));
-        return  getCaminhoMaisCurtoPara(buscarVertice(Destino));
+        return getCaminhoMaisCurtoPara(buscarVertice(Destino));
     }
 
+    /**
+     * Metodo que calcula uma matriz contendo o melhor caminho de um vertice para todos os outros do grafo
+     * @param vertice - vertice a partir do qual os melhores caminhos serao calculados
+     * @return matriz contendo todos os melhores caminhos entre um vertice e os outros do grafo
+     */
     public Object[][] matrizMelhorCaminho(Vertice vertice) {
         ArrayList<Vertice> aux = vertices;
         aux.remove(vertice);
-        Object[][] matriz = new Object[aux.size()/2][aux.size()];
-        for(int linha = 0; linha < aux.size()/2; linha++){            
-            for(int coluna = 0; coluna < aux.size(); coluna++){
+        Object[][] matriz = new Object[aux.size() / 2][aux.size()];
+        for (int linha = 0; linha < aux.size() / 2; linha++) {
+            for (int coluna = 0; coluna < aux.size(); coluna++) {
                 this.calcularMenoresDistancias(vertice);
                 List<Vertice> caminho = getCaminhoMaisCurtoPara(aux.get(coluna));
-                //System.out.println(caminho.size());
-                if(caminho.size() > linha){
-                    matriz[linha][coluna] = caminho.get(linha).getNome();
+                // O tamanho da linha não pode ser maior que o tamanho do caminho pois essa posição não existe no vetor caminho
+                if (caminho.size() > linha) {
+                    matriz[linha][coluna] = caminho.get(linha).getNome(); // Adiciona na linha da coluna o vertice a ser percorrido no dado momento do vertice da coluna
                 }
             }
         }
-        
+
         return matriz;
-    }
+   }     
+   
 
-    private ArrayList<Integer> buscarArestas(String nome) {
-        int index = 0;
-        ArrayList<Integer> indices = new ArrayList<Integer>();
-        for (Aresta a : arestas) {
-            if (a.getOrigem().getNome().equals(nome)) {
-                indices.add(index);
-            }
-            if (a.getDestino().getNome().equals(nome)) {
-                indices.add(index);
-            }
-            index++;
-        }
-        return indices;
-    }
-
-    public boolean removerVertice(String nome) {
-        Vertice v = buscarVertice(nome);
-        if (v == null) {
-            return false;
-        }
-
-        vertices.remove(v);
-        for (Aresta a : v.getArestas()) {
-            removerAresta(a);
-        }
-        notifyObservers();
-        return true;
-    }
-
-    private void removerAresta(Aresta a) {
-        arestas.remove(a);
-        for (Vertice v : vertices) {
-            v.getArestas().remove(a);
-        }
-    }
-
-    public void removerTodosVertices() {
+    /**
+     * Metodo que remove todos os vertices e arestas do grafo
+     */
+    public void resetar() {
         vertices.clear();
         arestas.clear();
         notifyObservers();

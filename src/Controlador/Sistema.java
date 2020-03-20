@@ -150,7 +150,7 @@ public class Sistema {
     
     public static void resetarRede()
     {
-        rede.removerTodosVertices();
+        rede.resetar();
     }
     
     public static List<Vertice> menorRotaEntre(String origem, String destino)

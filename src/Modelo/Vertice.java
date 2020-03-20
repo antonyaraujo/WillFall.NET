@@ -15,11 +15,6 @@ public class Vertice implements Comparable<Vertice>{
     private double distanciaMinima = Double.MAX_VALUE;
     private int x, y;
     private boolean terminal;
-
-    public Vertice(String name) {
-        this.nome = name;
-        this.arestas = new ArrayList<>();
-    }
     
     public Vertice(String name, boolean terminal, int x, int y) {
         this.nome = name;
