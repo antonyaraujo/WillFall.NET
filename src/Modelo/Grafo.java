@@ -117,19 +117,21 @@ public class Grafo implements Observable {
     }
 
     public Object[][] matrizMelhorCaminho(Vertice vertice) {
-        calcularMenoresDistancias(vertice);        
-        ArrayList<Vertice> listaV = vertices;
-        listaV.remove(vertice);        
-        Object[][] matriz = new Object[getNumVertices() / 2][getNumVertices()];
-        for (int linha = 0; linha < getNumVertices() / 2; linha++) {
-            for (int coluna = 0; coluna < getNumVertices(); coluna++) {                
-                    if (getCaminhoMaisCurtoPara(listaV.get(coluna)).size() > linha) {
-                        matriz[linha][coluna] = getCaminhoMaisCurtoPara(listaV.get(coluna)).get(linha);
-                   }                
+        ArrayList<Vertice> aux = vertices;
+        aux.remove(vertice);
+        Object[][] matriz = new Object[aux.size()/2][aux.size()];
+        for(int linha = 0; linha < aux.size()/2; linha++){            
+            for(int coluna = 0; coluna < aux.size(); coluna++){
+                this.calcularMenoresDistancias(vertice);
+                List<Vertice> caminho = getCaminhoMaisCurtoPara(aux.get(coluna));
+                //System.out.println(caminho.size());
+                if(caminho.size() > linha){
+                    matriz[linha][coluna] = caminho.get(linha).getNome();
+                }
             }
-        }                
-        notifyObservers();
-        return matriz;        
+        }
+        
+        return matriz;
     }
 
     private ArrayList<Integer> buscarArestas(String nome) {

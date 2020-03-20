@@ -7,12 +7,14 @@ package Visao;
 
 import Controlador.Sistema;
 import Modelo.Observer;
+import java.awt.Font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
@@ -80,6 +82,9 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         visualizar = new javax.swing.JMenu();
         exibirPesos = new javax.swing.JCheckBoxMenuItem();
         grafo = new javax.swing.JMenu();
+        sobre = new javax.swing.JMenu();
+        ajuda = new javax.swing.JMenuItem();
+        detalhes = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WillFall.NET");
@@ -222,6 +227,21 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         grafo.setText("Grafo");
         barraMenu.add(grafo);
 
+        sobre.setText("Sobre");
+
+        ajuda.setText("Ajuda");
+        sobre.add(ajuda);
+
+        detalhes.setText("Detalhes");
+        detalhes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                detalhesActionPerformed(evt);
+            }
+        });
+        sobre.add(detalhes);
+
+        barraMenu.add(sobre);
+
         setJMenuBar(barraMenu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -356,6 +376,21 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
                 equipamento1 + " e " + equipamento2 + " é: \n" + valor);
     }//GEN-LAST:event_calcularDistanciaEuclidianaActionPerformed
 
+    private void detalhesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detalhesActionPerformed
+        JFrame detalhes = new JFrame("WillFall.NET");
+        detalhes.setSize(100, 250);
+        JLabel titulo = new JLabel("WillFall.NET");
+        titulo.setFont(new Font("Serif", Font.BOLD, 25));
+        titulo.setLocation(10, detalhes.getY()/2);
+        JLabel info = new JLabel("Desenvolvido por Antony Araújo e Anderson Lima \n<b>Disciplina:<\b> MI - Programação"
+                + "\nTutor: Carlos Rodrigues");
+        info.setFont(new Font("Serif", Font.BOLD, 25));
+        info.setLocation(25, detalhes.getY()/2);
+        detalhes.add(titulo);
+        detalhes.add(info);
+        detalhes.setVisible(true);
+    }//GEN-LAST:event_detalhesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -402,10 +437,12 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JButton Botao_sair;
     private javax.swing.JButton adicionarConexao;
     private javax.swing.JButton adicionarEquipamentoButton;
+    private javax.swing.JMenuItem ajuda;
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JButton calcularDistanciaEuclidiana;
     private javax.swing.JMenuItem carregarArquivo;
+    private javax.swing.JMenuItem detalhes;
     private javax.swing.JCheckBoxMenuItem exibirPesos;
     private javax.swing.JMenu grafo;
     private javax.swing.JButton identificarCaminhos;
@@ -414,6 +451,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     private javax.swing.JButton removerEquipamentoButton;
     private javax.swing.JButton resetarRedeButton;
     private javax.swing.JMenuItem salvarArquivo;
+    private javax.swing.JMenu sobre;
     private javax.swing.JMenu visualizar;
     // End of variables declaration//GEN-END:variables
 
