@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Representa um Nó de um Grafo.
  * @author antony
  */
 public class Vertice implements Comparable<Vertice>{    

@@ -41,12 +41,70 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exibirPesosActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menorRotaMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Menor Rota"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menorRotaMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="distanciaEuclidianaMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Dist&#xe2;ncia Euclidiana"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="distanciaEuclidianaMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="caminhosMenosCustososMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Caminhos Menos Custosos"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="caminhosMenosCustososMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="grafo">
+        <Menu class="javax.swing.JMenu" name="redeMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Grafo"/>
+            <Property name="text" type="java.lang.String" value="Rede"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="adicionarEquipamentoMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Adicionar Equipamento"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adicionarEquipamentoMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="removerEquipamentoMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Remover Equipamento"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removerEquipamentoMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="adicionarConexaoMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Adicionar Conex&#xe3;o"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adicionarConexaoMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="resetarRedeMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Resetar Rede"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetarRedeMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="sobre">
           <Properties>
@@ -96,149 +154,13 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="417" max="32767" attributes="0"/>
-              <Component id="painelOpcoes" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-          </Group>
+          <EmptySpace min="0" pref="635" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-              <Component id="painelOpcoes" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-          </Group>
+          <EmptySpace min="0" pref="608" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
-  <SubComponents>
-    <Container class="javax.swing.JPanel" name="painelOpcoes">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Op&#xe7;&#xf5;es de Rede"/>
-          </Border>
-        </Property>
-      </Properties>
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace pref="28" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="Botao_sair" min="-2" pref="82" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="removerEquipamentoButton" max="32767" attributes="0"/>
-                              <Component id="adicionarEquipamentoButton" max="32767" attributes="0"/>
-                              <Component id="adicionarConexao" alignment="1" max="32767" attributes="0"/>
-                              <Component id="identificarCaminhos" alignment="1" max="32767" attributes="0"/>
-                              <Component id="menorRota" alignment="1" max="32767" attributes="0"/>
-                              <Component id="calcularDistanciaEuclidiana" alignment="1" max="32767" attributes="0"/>
-                              <Component id="resetarRedeButton" alignment="1" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                  <Component id="adicionarEquipamentoButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="removerEquipamentoButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="adicionarConexao" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="calcularDistanciaEuclidiana" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                  <Component id="identificarCaminhos" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="menorRota" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="resetarRedeButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="218" max="32767" attributes="0"/>
-                  <Component id="Botao_sair" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Component class="javax.swing.JButton" name="adicionarEquipamentoButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Adicionar Equipamento"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adicionarEquipamentoButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="Botao_sair">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Sair"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Botao_sairActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="removerEquipamentoButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Remover Equipamento"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removerEquipamentoButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="resetarRedeButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Resetar Rede"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetarRedeButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="identificarCaminhos">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Identificar Caminhos"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="identificarCaminhosActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="adicionarConexao">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Adicionar Conex&#xe3;o"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adicionarConexaoActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="menorRota">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Visualizar Menor Rota"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menorRotaActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="calcularDistanciaEuclidiana">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Dist&#xe2;ncia Euclidiana"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="calcularDistanciaEuclidianaActionPerformed"/>
-          </Events>
-        </Component>
-      </SubComponents>
-    </Container>
-  </SubComponents>
 </Form>

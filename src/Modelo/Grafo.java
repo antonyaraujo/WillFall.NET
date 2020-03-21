@@ -236,7 +236,8 @@ public class Grafo implements Observable {
      * @return matriz contendo todos os melhores caminhos entre um vertice e os outros do grafo
      */
     public Object[][] matrizMelhorCaminho(Vertice vertice) {
-        ArrayList<Vertice> aux = vertices;
+        //ArrayList<Vertice> aux = vertices;
+        ArrayList<Vertice> aux = new ArrayList<>(vertices);
         aux.remove(vertice);
         Object[][] matriz = new Object[aux.size() / 2][aux.size()];
         for (int linha = 0; linha < aux.size() / 2; linha++) {

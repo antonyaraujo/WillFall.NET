@@ -7,12 +7,16 @@ package Visao;
 
 import Controlador.Sistema;
 import Modelo.Observer;
+import Modelo.Vertice;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,24 +28,29 @@ import javax.swing.JTextField;
  *
  * @author antony
  */
-public class GUI extends javax.swing.JFrame implements Modelo.Observable{
+public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observer{
     private GrafoGUI painel;
     private ArrayList<Observer> observers;
     /**
      * Creates new form GUI
      */
     
-    public GUI() throws IOException {                     
+    public GUI() throws IOException {  
+        Toolkit kit = Toolkit.getDefaultToolkit();  
+        Dimension tamTela = kit.getScreenSize();  
+
         initComponents();
-        pack();                                 
-        this.setSize(1200, 720);                  
+        pack();   
+        setSize(tamTela.width, tamTela.height-35);
         painel = new GrafoGUI();
         getContentPane().add(painel);         
-        painel.setLocation(36, painelOpcoes.getY());
-        painel.setSize(this.getWidth()-painelOpcoes.getWidth()-100, painelOpcoes.getHeight());        
+       
+        painel.setSize(getWidth()-20, getHeight()-60);        
         this.setLocationRelativeTo(null);
         estadoBotoes(false);
-        observers = new ArrayList();                          
+        estadoBotaoConexao(false);
+        observers = new ArrayList();    
+        painel.registerObserver(this);
     }
 
     @Override
@@ -61,9 +70,14 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         
     
     private void estadoBotoes(boolean estado){
-        calcularDistanciaEuclidiana.setEnabled(estado);
-        identificarCaminhos.setEnabled(estado);
-        menorRota.setEnabled(estado);
+        distanciaEuclidianaMenuItem.setEnabled(estado);
+        caminhosMenosCustososMenuItem.setEnabled(estado);
+        menorRotaMenuItem.setEnabled(estado);
+    }
+    
+    private void estadoBotaoConexao(boolean estado)
+    {
+        adicionarConexaoMenuItem.setEnabled(estado);
     }
     
     /**
@@ -75,22 +89,20 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        painelOpcoes = new javax.swing.JPanel();
-        adicionarEquipamentoButton = new javax.swing.JButton();
-        Botao_sair = new javax.swing.JButton();
-        removerEquipamentoButton = new javax.swing.JButton();
-        resetarRedeButton = new javax.swing.JButton();
-        identificarCaminhos = new javax.swing.JButton();
-        adicionarConexao = new javax.swing.JButton();
-        menorRota = new javax.swing.JButton();
-        calcularDistanciaEuclidiana = new javax.swing.JButton();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
         carregarArquivo = new javax.swing.JMenuItem();
         salvarArquivo = new javax.swing.JMenuItem();
         visualizar = new javax.swing.JMenu();
         exibirPesos = new javax.swing.JCheckBoxMenuItem();
-        grafo = new javax.swing.JMenu();
+        menorRotaMenuItem = new javax.swing.JMenuItem();
+        distanciaEuclidianaMenuItem = new javax.swing.JMenuItem();
+        caminhosMenosCustososMenuItem = new javax.swing.JMenuItem();
+        redeMenu = new javax.swing.JMenu();
+        adicionarEquipamentoMenuItem = new javax.swing.JMenuItem();
+        removerEquipamentoMenuItem = new javax.swing.JMenuItem();
+        adicionarConexaoMenuItem = new javax.swing.JMenuItem();
+        resetarRedeMenuItem = new javax.swing.JMenuItem();
         sobre = new javax.swing.JMenu();
         ajuda = new javax.swing.JMenuItem();
         detalhes = new javax.swing.JMenuItem();
@@ -98,107 +110,6 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WillFall.NET");
         setResizable(false);
-
-        painelOpcoes.setBorder(javax.swing.BorderFactory.createTitledBorder("Opções de Rede"));
-
-        adicionarEquipamentoButton.setText("Adicionar Equipamento");
-        adicionarEquipamentoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adicionarEquipamentoButtonActionPerformed(evt);
-            }
-        });
-
-        Botao_sair.setText("Sair");
-        Botao_sair.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Botao_sairActionPerformed(evt);
-            }
-        });
-
-        removerEquipamentoButton.setText("Remover Equipamento");
-        removerEquipamentoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removerEquipamentoButtonActionPerformed(evt);
-            }
-        });
-
-        resetarRedeButton.setText("Resetar Rede");
-        resetarRedeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetarRedeButtonActionPerformed(evt);
-            }
-        });
-
-        identificarCaminhos.setText("Identificar Caminhos");
-        identificarCaminhos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                identificarCaminhosActionPerformed(evt);
-            }
-        });
-
-        adicionarConexao.setText("Adicionar Conexão");
-        adicionarConexao.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adicionarConexaoActionPerformed(evt);
-            }
-        });
-
-        menorRota.setText("Visualizar Menor Rota");
-        menorRota.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menorRotaActionPerformed(evt);
-            }
-        });
-
-        calcularDistanciaEuclidiana.setText("Distância Euclidiana");
-        calcularDistanciaEuclidiana.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                calcularDistanciaEuclidianaActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout painelOpcoesLayout = new javax.swing.GroupLayout(painelOpcoes);
-        painelOpcoes.setLayout(painelOpcoesLayout);
-        painelOpcoesLayout.setHorizontalGroup(
-            painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(painelOpcoesLayout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addComponent(Botao_sair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelOpcoesLayout.createSequentialGroup()
-                        .addGroup(painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(removerEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(adicionarEquipamentoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(adicionarConexao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(identificarCaminhos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(menorRota, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(calcularDistanciaEuclidiana, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(resetarRedeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18))))
-        );
-        painelOpcoesLayout.setVerticalGroup(
-            painelOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(painelOpcoesLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(adicionarEquipamentoButton)
-                .addGap(18, 18, 18)
-                .addComponent(removerEquipamentoButton)
-                .addGap(18, 18, 18)
-                .addComponent(adicionarConexao)
-                .addGap(18, 18, 18)
-                .addComponent(calcularDistanciaEuclidiana)
-                .addGap(18, 18, 18)
-                .addComponent(identificarCaminhos)
-                .addGap(18, 18, 18)
-                .addComponent(menorRota)
-                .addGap(18, 18, 18)
-                .addComponent(resetarRedeButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
-                .addComponent(Botao_sair)
-                .addContainerGap())
-        );
 
         arquivo.setText("Arquivo");
 
@@ -231,10 +142,67 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         });
         visualizar.add(exibirPesos);
 
+        menorRotaMenuItem.setText("Menor Rota");
+        menorRotaMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menorRotaMenuItemActionPerformed(evt);
+            }
+        });
+        visualizar.add(menorRotaMenuItem);
+
+        distanciaEuclidianaMenuItem.setText("Distância Euclidiana");
+        distanciaEuclidianaMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                distanciaEuclidianaMenuItemActionPerformed(evt);
+            }
+        });
+        visualizar.add(distanciaEuclidianaMenuItem);
+
+        caminhosMenosCustososMenuItem.setText("Caminhos Menos Custosos");
+        caminhosMenosCustososMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                caminhosMenosCustososMenuItemActionPerformed(evt);
+            }
+        });
+        visualizar.add(caminhosMenosCustososMenuItem);
+
         barraMenu.add(visualizar);
 
-        grafo.setText("Grafo");
-        barraMenu.add(grafo);
+        redeMenu.setText("Rede");
+
+        adicionarEquipamentoMenuItem.setText("Adicionar Equipamento");
+        adicionarEquipamentoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adicionarEquipamentoMenuItemActionPerformed(evt);
+            }
+        });
+        redeMenu.add(adicionarEquipamentoMenuItem);
+
+        removerEquipamentoMenuItem.setText("Remover Equipamento");
+        removerEquipamentoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removerEquipamentoMenuItemActionPerformed(evt);
+            }
+        });
+        redeMenu.add(removerEquipamentoMenuItem);
+
+        adicionarConexaoMenuItem.setText("Adicionar Conexão");
+        adicionarConexaoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adicionarConexaoMenuItemActionPerformed(evt);
+            }
+        });
+        redeMenu.add(adicionarConexaoMenuItem);
+
+        resetarRedeMenuItem.setText("Resetar Rede");
+        resetarRedeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetarRedeMenuItemActionPerformed(evt);
+            }
+        });
+        redeMenu.add(resetarRedeMenuItem);
+
+        barraMenu.add(redeMenu);
 
         sobre.setText("Sobre");
 
@@ -257,48 +225,37 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(417, Short.MAX_VALUE)
-                .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+            .addGap(0, 635, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(painelOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 608, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Botao_sairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Botao_sairActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_Botao_sairActionPerformed
-
 
     private void carregarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_carregarArquivoActionPerformed
         JFileChooser fc = new JFileChooser();
-        fc.showOpenDialog(this);
-        try {
+        try 
+        {
+            if(fc.showOpenDialog(this)!= fc.APPROVE_OPTION)
+                return;
             Sistema.carregarArquivo(fc.getSelectedFile());
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        catch(Exception e){}
         painel.repaint();
-        System.gc();
+        if (Sistema.getGrafo().getNumVertices() >= 2)
+            estadoBotaoConexao(true);
         if(Sistema.getGrafo().getNumVertices() >= 30)
             estadoBotoes(true);
+        
     }//GEN-LAST:event_carregarArquivoActionPerformed
-
-    private void adicionarEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoButtonActionPerformed
-        Object[] opcoes = {"Roteador", "Computador", "Internet"};                   
-        painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));                  
-        if(Sistema.getGrafo().getNumVertices() >= 30)
-            estadoBotoes(true);
-    }//GEN-LAST:event_adicionarEquipamentoButtonActionPerformed
 
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
         JFileChooser fc = new JFileChooser();        
@@ -312,53 +269,6 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
         painel.repaint();        
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
-    private void removerEquipamentoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoButtonActionPerformed
-        String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();                          
-        if(Sistema.removerVertice(nome))
-                JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!");        
-        painel.removeAll();
-        painel.repaint();
-        if(Sistema.getGrafo().getNumVertices() < 30)
-            estadoBotoes(false);
-        System.gc();
-    }//GEN-LAST:event_removerEquipamentoButtonActionPerformed
-
-    private void resetarRedeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeButtonActionPerformed
-        Sistema.resetarRede();       
-        painel.removeAll();
-        painel.validate();
-        painel.repaint(); 
-    }//GEN-LAST:event_resetarRedeButtonActionPerformed
-
-    private void adicionarConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoActionPerformed
-      
-        String r1 = JOptionPane.showInputDialog(null, "Digite o rótulo do primeiro equipamento", "Rótulo", 1);
-        if (r1 == null) {
-            return;
-        }
-        String r2 = JOptionPane.showInputDialog(null, "Digite o rótulo do segundo equipamento", "Rótulo", 1);
-        if (r2 == null) {
-            return;
-        }        
-        int peso = (Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o peso da conexão", null)));                
-        Sistema.adicionarAresta(r1.toUpperCase(), r2.toUpperCase(), peso);
-        int opcao = JOptionPane.showConfirmDialog(null, "A conexão deve ser bidirecional?");
-        if(opcao == JOptionPane.YES_OPTION)
-            Sistema.adicionarAresta(r2.toUpperCase(), r1.toUpperCase(), peso);
-        painel.repaint();        
-    }//GEN-LAST:event_adicionarConexaoActionPerformed
-
-    private void identificarCaminhosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificarCaminhosActionPerformed
-        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó").toUpperCase();
-        JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(computador);
-        JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
-        exibir.add(barraRolagem);                
-        exibir.setSize(600, 200);
-        exibir.setVisible(true);        
-        exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        exibir.setLocationRelativeTo(null);        
-    }//GEN-LAST:event_identificarCaminhosActionPerformed
-
     private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
         if(!exibirPesos.isSelected())
             painel.setExibirPeso(false);
@@ -366,33 +276,6 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable{
             painel.setExibirPeso(true);
         painel.repaint();
     }//GEN-LAST:event_exibirPesosActionPerformed
-
-    private void menorRotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menorRotaActionPerformed
-        String origem = JOptionPane.showInputDialog("Digite o rótulo do terminal de partida");
-        if(!Sistema.getGrafo().buscarVertice(origem).isTerminal()) 
-        {
-            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
-            return;
-        }   
-        String destino = JOptionPane.showInputDialog("Digite o rótulo do terminal de destino");
-        if(!Sistema.getGrafo().buscarVertice(destino).isTerminal()) {
-            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
-            return;
-        }
-        JOptionPane.showMessageDialog(null, Sistema.menorRotaEntre(origem, destino));
-        
-        
-        
-        
-    }//GEN-LAST:event_menorRotaActionPerformed
-
-    private void calcularDistanciaEuclidianaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcularDistanciaEuclidianaActionPerformed
-        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A");
-        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B");
-        double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
-        if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
-                equipamento1 + " e " + equipamento2 + " é: \n" + valor);
-    }//GEN-LAST:event_calcularDistanciaEuclidianaActionPerformed
 
     private void detalhesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detalhesActionPerformed
         JFrame detalhes = new JFrame("WillFall.NET");        
@@ -416,6 +299,156 @@ detalhes.setSize(200, 250);
         detalhes.setDefaultCloseOperation(DISPOSE_ON_CLOSE); 
         detalhes.setLocationRelativeTo(null);detalhes.pack();
     }//GEN-LAST:event_detalhesActionPerformed
+
+    private void adicionarConexao(String eq1, String eq2)
+    {
+        boolean ok = true;
+        int peso = 0;
+        do{
+            try
+            {
+                peso = (Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o peso da conexão", null)));   
+                ok = true;
+            }
+            catch(NumberFormatException e)
+            {
+                JOptionPane.showMessageDialog(null, "Digite um valor de peso válido");
+                ok=false;
+            }
+        } while(!ok);
+
+            
+        int opcao = JOptionPane.showConfirmDialog(null, "A conexão deve ser bidirecional?", "Bidirecionalidade", JOptionPane.YES_NO_OPTION);
+        Vertice v1 = Sistema.getGrafo().buscarVertice(eq1);
+        Vertice v2 = Sistema.getGrafo().buscarVertice(eq2);
+        if(opcao == JOptionPane.NO_OPTION)
+        {
+            Sistema.adicionarAresta(eq1.toUpperCase(), eq2.toUpperCase(), peso);
+            painel.repaint();
+            if(!v1.isTerminal() && v1.getArestas().size() - 1 ==0)
+            {
+                String eq3 = JOptionPane.showInputDialog(null, "Informe um equipamento para encaminhar pacotes de dados para o equipamento "
+                        + eq1, "Equipamento", 1).toUpperCase();
+                adicionarConexao(eq3, eq1);
+            }
+                
+            if(!v2.isTerminal() && v2.getArestas().size() - 1 ==0)
+            {
+                String eq4 = JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase();
+                adicionarConexao(eq2, eq4);
+            }
+        }
+        if(opcao == JOptionPane.YES_OPTION)
+        {
+            Sistema.adicionarAresta(eq1.toUpperCase(), eq2.toUpperCase(), peso);
+            Sistema.adicionarAresta(eq2.toUpperCase(), eq1.toUpperCase(), peso);
+            painel.repaint();
+            if(!v2.isTerminal() && v2.getArestas().size() - 2 ==0)
+            {
+                String eq3 = JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase();
+                adicionarConexao(eq2, eq3);
+            }
+        }
+
+    }
+    private void adicionarConexaoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoMenuItemActionPerformed
+        String r1 = JOptionPane.showInputDialog(null, "Digite o rótulo do primeiro equipamento", "Rótulo", 1).toUpperCase();
+        if (r1 == null) {
+            return;
+        }
+        String r2 = JOptionPane.showInputDialog(null, "Digite o rótulo do segundo equipamento", "Rótulo", 1).toUpperCase();
+        if (r2 == null) {
+            return;
+        }  
+        adicionarConexao(r1, r2);
+        painel.repaint(); 
+    }//GEN-LAST:event_adicionarConexaoMenuItemActionPerformed
+
+    private void adicionarEquipamentoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoMenuItemActionPerformed
+        Object[] opcoes = {"Roteador", "Computador", "Internet"};   
+        Object[] opcoes1 = {"Computador"}; 
+        if (Sistema.getGrafo().getNumVertices()<2) 
+            painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes1, opcoes[0]));
+        else
+            painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));
+        
+    }//GEN-LAST:event_adicionarEquipamentoMenuItemActionPerformed
+
+    private void removerEquipamentoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoMenuItemActionPerformed
+        String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();                          
+        if(Sistema.removerVertice(nome))
+            JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!");        
+        painel.removeAll();
+        painel.repaint();
+        if(Sistema.getGrafo().getNumVertices() < 2)
+            estadoBotaoConexao(false);
+        if(Sistema.getGrafo().getNumVertices() < 30)
+            estadoBotoes(false);
+    }//GEN-LAST:event_removerEquipamentoMenuItemActionPerformed
+
+    private void resetarRedeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeMenuItemActionPerformed
+        Sistema.resetarRede();       
+        painel.removeAll();
+        painel.validate();
+        painel.repaint(); 
+        estadoBotaoConexao(false);
+        estadoBotoes(false);
+    }//GEN-LAST:event_resetarRedeMenuItemActionPerformed
+
+    private void menorRotaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menorRotaMenuItemActionPerformed
+        String origem = JOptionPane.showInputDialog("Digite o rótulo do terminal de partida").toUpperCase();
+        try 
+        {
+            if(!Sistema.getGrafo().buscarVertice(origem).isTerminal()) 
+            {
+            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
+            return;
+            } 
+        }
+        catch(NullPointerException e)
+        {
+            JOptionPane.showMessageDialog(null, "Equipamento " + origem + " não encontrado!");
+            return;
+        }
+        String destino = JOptionPane.showInputDialog("Digite o rótulo do terminal de destino").toUpperCase();
+        try 
+        {
+            if(!Sistema.getGrafo().buscarVertice(destino).isTerminal())
+            {
+            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
+            }
+        } 
+        catch (NullPointerException e) 
+        {
+            JOptionPane.showMessageDialog(null, "Equipamento " + destino + " não encontrado!");
+            return;
+        }
+        painel.setMenorRotaVertices(Sistema.menorRotaEntre(origem, destino));
+        painel.setDestacarRota(true);
+        painel.repaint();
+        JOptionPane.showMessageDialog(null, "A menor rota entre " + origem + "e " + destino + " está destacada no grafo"
+                + "\nRota: "+Sistema.menorRotaEntre(origem, destino)+"\nPressione OK para não destacar mais a rota");
+        painel.repaint();
+    }//GEN-LAST:event_menorRotaMenuItemActionPerformed
+
+    private void distanciaEuclidianaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distanciaEuclidianaMenuItemActionPerformed
+        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A");
+        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B");
+        double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
+        if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
+                equipamento1 + " e " + equipamento2 + " é: \n" + valor);
+    }//GEN-LAST:event_distanciaEuclidianaMenuItemActionPerformed
+
+    private void caminhosMenosCustososMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_caminhosMenosCustososMenuItemActionPerformed
+        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó").toUpperCase();
+        JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(computador);
+        JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
+        exibir.add(barraRolagem);                
+        exibir.setSize(600, 200);
+        exibir.setVisible(true);        
+        exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        exibir.setLocationRelativeTo(null);
+    }//GEN-LAST:event_caminhosMenosCustososMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -460,25 +493,33 @@ detalhes.setSize(200, 250);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Botao_sair;
-    private javax.swing.JButton adicionarConexao;
-    private javax.swing.JButton adicionarEquipamentoButton;
+    private javax.swing.JMenuItem adicionarConexaoMenuItem;
+    private javax.swing.JMenuItem adicionarEquipamentoMenuItem;
     private javax.swing.JMenuItem ajuda;
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
-    private javax.swing.JButton calcularDistanciaEuclidiana;
+    private javax.swing.JMenuItem caminhosMenosCustososMenuItem;
     private javax.swing.JMenuItem carregarArquivo;
     private javax.swing.JMenuItem detalhes;
+    private javax.swing.JMenuItem distanciaEuclidianaMenuItem;
     private javax.swing.JCheckBoxMenuItem exibirPesos;
-    private javax.swing.JMenu grafo;
-    private javax.swing.JButton identificarCaminhos;
-    private javax.swing.JButton menorRota;
-    private javax.swing.JPanel painelOpcoes;
-    private javax.swing.JButton removerEquipamentoButton;
-    private javax.swing.JButton resetarRedeButton;
+    private javax.swing.JMenuItem menorRotaMenuItem;
+    private javax.swing.JMenu redeMenu;
+    private javax.swing.JMenuItem removerEquipamentoMenuItem;
+    private javax.swing.JMenuItem resetarRedeMenuItem;
     private javax.swing.JMenuItem salvarArquivo;
     private javax.swing.JMenu sobre;
     private javax.swing.JMenu visualizar;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Object numeroVertices) {
+        if((Integer)numeroVertices >=2)
+            estadoBotaoConexao(true);
+        if ((Integer)numeroVertices >=30)
+            estadoBotoes(true);
+    }
+    
+    
 
 }
