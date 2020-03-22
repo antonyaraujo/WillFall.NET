@@ -69,15 +69,15 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
                     y_novoVertice = e.getY();
                     String nomeEquipamento;
                     nomeEquipamento = JOptionPane.showInputDialog(null, "Digite o rótulo do equipamento", "Rótulo", 1).toUpperCase();
-                    if (nomeEquipamento == null)
-                    {
+                    if (nomeEquipamento == null) {
                         clickNoGrafo = false;
                         return;
-                    }
-                    else if (resposta.equals("Roteador")) {
-                        Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);
-                    } else if (resposta.equals("Computador")) {
-                        Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);
+                    } else {
+                        if (resposta.equals("Computador")) {
+                            Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);
+                        } else {                           
+                            Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);
+                        }
                     }
                     adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));
                     notifyObservers();

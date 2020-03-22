@@ -435,8 +435,9 @@ detalhes.setSize(200, 250);
         String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A");
         String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B");
         double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
+        
         if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
-                equipamento1 + " e " + equipamento2 + " é: \n" + valor);
+                equipamento1 + " e " + equipamento2 + " é: \n" + String.format("%.5f", valor));
     }//GEN-LAST:event_distanciaEuclidianaMenuItemActionPerformed
 
     private void caminhosMenosCustososMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_caminhosMenosCustososMenuItemActionPerformed

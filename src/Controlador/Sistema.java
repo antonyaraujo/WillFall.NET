@@ -167,7 +167,7 @@ public class Sistema {
         // Verifica se o equipamento 2 existe
         if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
         if(v1 != null && v2 != null)
-            return Math.sqrt(Math.pow(v1.getX()-v2.getX(), 2) - Math.pow(v1.getY() - v2.getY(), 2) );
+            return Math.sqrt(Math.pow((v1.getX()-v2.getX()), 2.0) + Math.pow((v1.getY()-v2.getY()), 2.0));
         return -1;
     }
     
