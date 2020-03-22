@@ -118,15 +118,13 @@ public class Grafo implements Observable {
      * @param peso - valor da conexao entre origem e destino     
      * @return nao ha retorno
      */
-    public void adicionarAresta(String origem, String destino, double peso) {
-        Vertice Origem = buscarVertice(origem);
-        Vertice Destino = buscarVertice(destino);
-        if (Origem == null || Destino == null) {
+    public void adicionarAresta(Vertice origem, Vertice destino, double peso) {        
+        if (origem == null || destino == null) {
             return;
         }
-        Aresta aresta = new Aresta(Origem, Destino, peso);
-        Origem.addVizinho(aresta);
-        Destino.addVizinho(aresta);
+        Aresta aresta = new Aresta(origem, destino, peso);
+        origem.addVizinho(aresta);
+        destino.addVizinho(aresta);
         arestas.add(aresta);
         notifyObservers();
     }

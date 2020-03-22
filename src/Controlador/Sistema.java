@@ -31,7 +31,7 @@ public class Sistema {
         rede.adicionarVertice(nome, terminal, x, y);
     }
     
-    public static boolean adicionarAresta(String inicio,String destino, double peso){                        
+    public static boolean adicionarAresta(Vertice inicio, Vertice destino, double peso){                        
         rede.adicionarAresta(inicio, destino, peso);
         return true;
     }
@@ -69,10 +69,11 @@ public class Sistema {
                 try 
                 {
                     String dados[] = linha.split(";");
-                    String origem = dados[0];
-                    String destino = dados[1];
-                    double peso = Double.valueOf(dados[2]);
-                    rede.adicionarAresta(origem, destino, peso);
+                    Vertice origem = rede.buscarVertice(dados[0]);
+                    Vertice destino = rede.buscarVertice(dados[1]);
+                    double peso = Double.valueOf(dados[2]);         
+                    if(origem != null && destino != null)
+                        rede.adicionarAresta(origem, destino, peso);
                 }
                 catch (Exception e) 
                 {
@@ -154,11 +155,23 @@ public class Sistema {
         rede.resetar();
     }
     
+    /**
+     * Metodo que retorna a menor rota entre dois vertices, a partir do metodo do grafo de mesma funcao
+     * @param origem - nome do equipamento de origem
+     * @param destino - nome do equipamento de destino
+     * @return  lista de vertices que compoem o menor caminho entre a origem e o destino
+     */
     public static List<Vertice> menorRotaEntre(String origem, String destino)
     {         
         return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
     }
     
+    /**
+     * Método que calcula o valor da distância euclidiana entre 2 vértices
+     * @param equipamento1 - nome do primeiro equipamento
+     * @param equipamento2 - nome do segundo equipamento
+     * @return Retorna o resultado da fórmula √((v1x - v2x)² + (v1y-v2y)²) em double
+     */
     public static double calcularCoordenadasEuclidianas(String equipamento1, String equipamento2){
         Vertice v1 = rede.buscarVertice(equipamento1);
         // Verifica se o equipamento 1 existe
@@ -166,7 +179,7 @@ public class Sistema {
         Vertice v2 = rede.buscarVertice(equipamento2);
         // Verifica se o equipamento 2 existe
         if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
-        if(v1 != null && v2 != null)
+        if(v1 != null && v2 != null)            
             return Math.sqrt(Math.pow((v1.getX()-v2.getX()), 2.0) + Math.pow((v1.getY()-v2.getY()), 2.0));
         return -1;
     }

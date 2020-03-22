@@ -73,13 +73,17 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
                         clickNoGrafo = false;
                         return;
                     } else {
-                        if (resposta.equals("Computador")) {
-                            Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);
-                        } else {                           
-                            Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);
+                        if(grafo.buscarVertice(nomeEquipamento) == null){
+                            if (resposta.equals("Computador")) {
+                                Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);
+                            } else {                           
+                                Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);
+                            }
+                            adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Este nome já está sendo utilizado por outro equipamento");
                         }
-                    }
-                    adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));
+                    }                    
                     notifyObservers();
                     repaint();
                     clickNoGrafo = false;

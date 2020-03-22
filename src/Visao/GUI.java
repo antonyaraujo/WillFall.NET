@@ -53,11 +53,19 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         painel.registerObserver(this);
     }
 
+    /**
+     * Metodo que adiciona um observador ao JFrame para ser notificado de possíveis mudancas
+     * @param observer - o elemento observador a ser adicionado
+     */
     @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);
     }
 
+    /**
+     * Metodo que remove um observador ao JFrame para ser notificado de possiveis mudancas
+     * @param observer - o elemento observador a ser removido
+     */
     @Override
     public void removeObserver(Observer observer) {
         observers.remove(observer);
@@ -68,18 +76,25 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         
     }
         
-    
+    /**
+     * Metodo que muda o estado (ativado/desativado) dos itens do menu que só podem funcionar a partir de 30 vertices
+     * @param estado - variavel booleana com o novo estado dos itens de menu
+     */
     private void estadoBotoes(boolean estado){
         distanciaEuclidianaMenuItem.setEnabled(estado);
         caminhosMenosCustososMenuItem.setEnabled(estado);
         menorRotaMenuItem.setEnabled(estado);
     }
     
+    /**
+     * Metodo que muda o estado (ativado/desativado) dos item de menu para adicionarConexao
+     * @param estado - variavel booleana com o novo estado do item de menu
+     */
     private void estadoBotaoConexao(boolean estado)
     {
         adicionarConexaoMenuItem.setEnabled(estado);
     }
-    
+            
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -237,6 +252,10 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
     }// </editor-fold>//GEN-END:initComponents
 
 
+    /**
+     * Metodo que carrega um arquivo de configuracao de topologia a partir de um item de Menu
+     * @param evt - Evento que aciona o item de menu para chamar este método
+     */
     private void carregarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_carregarArquivoActionPerformed
         JFileChooser fc = new JFileChooser();
         try 
@@ -257,6 +276,10 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         
     }//GEN-LAST:event_carregarArquivoActionPerformed
 
+    /**
+     * Metodo que salva um novo arquivo contendo a configuracao topologica do grafo
+     * @param evt - Evento que aciona o item de menu para chamar este metodo
+     */
     private void salvarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarArquivoActionPerformed
         JFileChooser fc = new JFileChooser();        
         fc.setDialogTitle("Exportar Arquivo de Configuração");                
@@ -269,6 +292,11 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         painel.repaint();        
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
+    /**
+     * Metodo que verifica se o item de Menu exibirPesos esta ativado ou desativado
+     * e a partir disso esconde ou mostra os pesos das conexoes do grafo
+     * @param evt 
+     */
     private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
         if(!exibirPesos.isSelected())
             painel.setExibirPeso(false);
@@ -300,68 +328,70 @@ detalhes.setSize(200, 250);
         detalhes.setLocationRelativeTo(null);detalhes.pack();
     }//GEN-LAST:event_detalhesActionPerformed
 
-    private void adicionarConexao(String eq1, String eq2)
+    private void adicionarConexao(Vertice eq1, Vertice eq2)
     {
         boolean ok = true;
         int peso = 0;
-        do{
-            try
-            {
-                peso = (Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o peso da conexão", null)));   
+        do {
+            try {
+                peso = (Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o peso da conexão", null)));
                 ok = true;
-            }
-            catch(NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Digite um valor de peso válido");
-                ok=false;
+                ok = false;
             }
-        } while(!ok);
+        } while (!ok);
 
-            
         int opcao = JOptionPane.showConfirmDialog(null, "A conexão deve ser bidirecional?", "Bidirecionalidade", JOptionPane.YES_NO_OPTION);
-        Vertice v1 = Sistema.getGrafo().buscarVertice(eq1);
-        Vertice v2 = Sistema.getGrafo().buscarVertice(eq2);
-        if(opcao == JOptionPane.NO_OPTION)
-        {
-            Sistema.adicionarAresta(eq1.toUpperCase(), eq2.toUpperCase(), peso);
+        if (opcao == JOptionPane.NO_OPTION) {
+            Sistema.adicionarAresta(eq1, eq2, peso);
             painel.repaint();
-            if(!v1.isTerminal() && v1.getArestas().size() - 1 ==0)
+            /*if(!eq1.isTerminal() && eq2.getArestas().size() - 1 ==0)
             {
-                String eq3 = JOptionPane.showInputDialog(null, "Informe um equipamento para encaminhar pacotes de dados para o equipamento "
-                        + eq1, "Equipamento", 1).toUpperCase();
+                Vertice eq3 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Informe um equipamento para encaminhar pacotes de dados para o equipamento "
+                        + eq1, "Equipamento", 1).toUpperCase());
+                
                 adicionarConexao(eq3, eq1);
             }
                 
-            if(!v2.isTerminal() && v2.getArestas().size() - 1 ==0)
+            if(!eq1.isTerminal() && eq2.getArestas().size() - 1 ==0)
             {
-                String eq4 = JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase();
+                Vertice eq4 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase());
                 adicionarConexao(eq2, eq4);
-            }
+            }*/
         }
-        if(opcao == JOptionPane.YES_OPTION)
-        {
-            Sistema.adicionarAresta(eq1.toUpperCase(), eq2.toUpperCase(), peso);
-            Sistema.adicionarAresta(eq2.toUpperCase(), eq1.toUpperCase(), peso);
+        if (opcao == JOptionPane.YES_OPTION) {
+            Sistema.adicionarAresta(eq1, eq2, peso);
+            Sistema.adicionarAresta(eq2, eq1, peso);
             painel.repaint();
-            if(!v2.isTerminal() && v2.getArestas().size() - 2 ==0)
+            /* if(!eq2.isTerminal() && eq2.getArestas().size() - 2 ==0)
             {
-                String eq3 = JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase();
+                Vertice eq3 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase());
                 adicionarConexao(eq2, eq3);
-            }
+            }*/
         }
-
     }
     private void adicionarConexaoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoMenuItemActionPerformed
-        String r1 = JOptionPane.showInputDialog(null, "Digite o rótulo do primeiro equipamento", "Rótulo", 1).toUpperCase();
-        if (r1 == null) {
-            return;
+        Vertice v1, v2;
+        if (Sistema.getGrafo().getNumVertices() >= 2) {
+            do {
+                v1 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Digite o rótulo do primeiro equipamento", "Rótulo", 1).toUpperCase());
+                if (v1 == null) {
+                    JOptionPane.showMessageDialog(null, "Equipamento não existente, tente novamente");
+                }
+            } while (v1 == null);
+
+            do {
+                v2 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Digite o rótulo do segundo equipamento", "Rótulo", 1).toUpperCase());
+                if (v2 == null) {
+                    JOptionPane.showMessageDialog(null, "Equipamento não existente, tente novamente");
+                }
+            } while (v2 == null);
+            adicionarConexao(v1, v2);
+            painel.repaint();
+        } else {
+            System.out.println("Adicione mais que 1 equipamento para esta opção funcionar");
         }
-        String r2 = JOptionPane.showInputDialog(null, "Digite o rótulo do segundo equipamento", "Rótulo", 1).toUpperCase();
-        if (r2 == null) {
-            return;
-        }  
-        adicionarConexao(r1, r2);
-        painel.repaint(); 
     }//GEN-LAST:event_adicionarConexaoMenuItemActionPerformed
 
     private void adicionarEquipamentoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoMenuItemActionPerformed
@@ -370,8 +400,7 @@ detalhes.setSize(200, 250);
         if (Sistema.getGrafo().getNumVertices()<2) 
             painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes1, opcoes[0]));
         else
-            painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));
-        
+            painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));        
     }//GEN-LAST:event_adicionarEquipamentoMenuItemActionPerformed
 
     private void removerEquipamentoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoMenuItemActionPerformed
@@ -432,8 +461,8 @@ detalhes.setSize(200, 250);
     }//GEN-LAST:event_menorRotaMenuItemActionPerformed
 
     private void distanciaEuclidianaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distanciaEuclidianaMenuItemActionPerformed
-        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A");
-        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B");
+        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A").toUpperCase();
+        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B").toUpperCase();
         double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
         
         if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
