@@ -11,18 +11,17 @@ import Modelo.Vertice;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+
 
 /**
  *
@@ -51,6 +50,12 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         estadoBotaoConexao(false);
         observers = new ArrayList();    
         painel.registerObserver(this);
+        if(JOptionPane.showConfirmDialog(null, "Deseja inicializar aplicação com a topologia padrão?") == JOptionPane.YES_OPTION){
+            Sistema.carregarArquivo(new File("padrao.txt"));
+            estadoBotaoConexao(true);
+            estadoBotoes(true);
+        }
+            
     }
 
     /**
@@ -119,7 +124,6 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         adicionarConexaoMenuItem = new javax.swing.JMenuItem();
         resetarRedeMenuItem = new javax.swing.JMenuItem();
         sobre = new javax.swing.JMenu();
-        ajuda = new javax.swing.JMenuItem();
         detalhes = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -221,9 +225,6 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
 
         sobre.setText("Sobre");
 
-        ajuda.setText("Ajuda");
-        sobre.add(ajuda);
-
         detalhes.setText("Detalhes");
         detalhes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -305,29 +306,42 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         painel.repaint();
     }//GEN-LAST:event_exibirPesosActionPerformed
 
+    /**
+     * Exibe detalhes do desenvolvimento do programa
+     * @param evt 
+     */
     private void detalhesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detalhesActionPerformed
-        JFrame detalhes = new JFrame("WillFall.NET");        
-        
-        JLabel titulo = new JLabel("WillFall.NET");
-        titulo.setFont(new Font("Serif", Font.BOLD, 25));
-        titulo.setLocation(10, detalhes.getY()/2);
+        JFrame detalhes = new JFrame("Sobre - WillFall.NET");
         JLabel info = new JLabel();
-        info.setText("<html> <b>Desenvolvido por</b> Antony Araújo e Anderson Lima \n Disciplina: MI - Programação"
-                + "\nTutor: Carlos Rodrigues");
+        detalhes.setSize(200, 250);
+        info.setFont(new Font("default", Font.ROMAN_BASELINE, 12));
+        info.setText("<html> \n"
+                + "\n"
+                + "	<center><h1><font color='#27408B'>WillFall.NET </font></h1>\n"
+                + "	<p>Versão Beta: 25<br>\n"
+                + "        Finalizado em: 22 Mar de 2020</p></center><br>\n"
+                + "\n"                 
+                + "<div style='text-indent: 5%;'><b>Desenvolvido por</b> Antony Araújo e Anderson Lima <br></div>\n"
+                + "<div style='text-indent: 5%;'><b>Disciplina: </b> MI - Programação<br></div>\n"
+                + "<div style='text-indent: 5%;'><b>Tutor:</b> Carlos Rodrigues <br><br></p></div><br>\n"
+                + "<center><div style='padding-left: 20px; margin-left: 10px; text-align:justify; width: 200px; heigth: 50px;display: flex; flex-direction: row; justify-content: center; align-items: center;'>WillFall.NET é um software desenvolvido para simulação e representação visual da rede de computadores da empresa WillFall NET LTDA. Permitindo a simulação das conexões entre seus diferentes equipamentos através de tipos abstratos de dados (como grafo) e cálculo de melhor caminho, através do algoritmo de dijkstra.</div></center><br>"
+                + "<i><center>Para maiores dúvidas contactar: <a href='malito:antonyaraujo@protonmail.com'>antonyaraujo@protonmail.com</a> ou </center></i></font>");
         info.setSize(200, 250);
-        detalhes.add(titulo);
-        detalhes.add(info);
-        detalhes.pack();
-detalhes.setSize(200, 250);        
-        //info.setLocation(25, detalhes.getY()/2);
-        titulo.setLocation(10, detalhes.getY()/2);
-        titulo.setVisible(true);
         info.setVisible(true);
+        detalhes.add(info);
+        
+        detalhes.pack();
         detalhes.setVisible(true);
-        detalhes.setDefaultCloseOperation(DISPOSE_ON_CLOSE); 
-        detalhes.setLocationRelativeTo(null);detalhes.pack();
+        detalhes.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        detalhes.setLocationRelativeTo(null);
+        detalhes.pack();
     }//GEN-LAST:event_detalhesActionPerformed
 
+    /**
+     * Metodo que dado dois equipamento os adiciona no grafo e na tela
+     * @param eq1 - vertice que representa a origem
+     * @param eq2  - vertice que representa o destino
+     */
     private void adicionarConexao(Vertice eq1, Vertice eq2)
     {
         boolean ok = true;
@@ -415,6 +429,10 @@ detalhes.setSize(200, 250);
             estadoBotoes(false);
     }//GEN-LAST:event_removerEquipamentoMenuItemActionPerformed
 
+    /**
+     * Metodo que remove todos os elementos do grafo e da tela
+     * @param evt 
+     */
     private void resetarRedeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarRedeMenuItemActionPerformed
         Sistema.resetarRede();       
         painel.removeAll();
@@ -525,7 +543,6 @@ detalhes.setSize(200, 250);
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem adicionarConexaoMenuItem;
     private javax.swing.JMenuItem adicionarEquipamentoMenuItem;
-    private javax.swing.JMenuItem ajuda;
     private javax.swing.JMenu arquivo;
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JMenuItem caminhosMenosCustososMenuItem;

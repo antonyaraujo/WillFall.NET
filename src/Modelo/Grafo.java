@@ -244,7 +244,10 @@ public class Grafo implements Observable {
                 List<Vertice> caminho = getCaminhoMaisCurtoPara(aux.get(coluna));
                 // O tamanho da linha não pode ser maior que o tamanho do caminho pois essa posição não existe no vetor caminho
                 if (caminho.size() > linha) {
-                    matriz[linha][coluna] = caminho.get(linha).getNome(); // Adiciona na linha da coluna o vertice a ser percorrido no dado momento do vertice da coluna
+                    if(caminho.size() == 1 && caminho.get(0) == aux.get(coluna))
+                        matriz[linha][coluna] = "!!!!! Sem conexão";
+                    else
+                        matriz[linha][coluna] = caminho.get(linha).getNome(); // Adiciona na linha da coluna o vertice a ser percorrido no dado momento do vertice da coluna
                 }
             }
         }
