@@ -11,7 +11,6 @@ import Modelo.Vertice;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -27,60 +26,39 @@ import javax.swing.JScrollPane;
  *
  * @author antony
  */
-public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observer{
+public class GUI extends javax.swing.JFrame implements Observer{
     private GrafoGUI painel;
     private ArrayList<Observer> observers;
+    private int numeroEquipamentos;
     /**
      * Creates new form GUI
+     * @throws java.io.IOException
      */
     
     public GUI() throws IOException {  
         Toolkit kit = Toolkit.getDefaultToolkit();  
         Dimension tamTela = kit.getScreenSize();  
-
         initComponents();
         pack();   
         setSize(tamTela.width, tamTela.height-35);
         painel = new GrafoGUI();
-        getContentPane().add(painel);         
+        getContentPane().add(painel);    
+        numeroEquipamentos = Sistema.getGrafo().getNumVertices();
        
         painel.setSize(getWidth()-20, getHeight()-60);        
         this.setLocationRelativeTo(null);
         estadoBotoes(false);
         estadoBotaoConexao(false);
         observers = new ArrayList();    
-        painel.registerObserver(this);
-        if(JOptionPane.showConfirmDialog(null, "Deseja inicializar aplicação com a topologia padrão?") == JOptionPane.YES_OPTION){
-            Sistema.carregarArquivo(new File("padrao.txt"));
-            estadoBotaoConexao(true);
-            estadoBotoes(true);
-        }
+        Sistema.getGrafo().registerObserver(this);
+        //if(JOptionPane.showConfirmDialog(null, "Deseja inicializar aplicação com a topologia padrão?") == JOptionPane.YES_OPTION){
+            //Sistema.carregarArquivo(new File("padrao.txt"));
+            //estadoBotaoConexao(true);
+            //estadoBotoes(true);
+        //}
             
     }
-
-    /**
-     * Metodo que adiciona um observador ao JFrame para ser notificado de possíveis mudancas
-     * @param observer - o elemento observador a ser adicionado
-     */
-    @Override
-    public void registerObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    /**
-     * Metodo que remove um observador ao JFrame para ser notificado de possiveis mudancas
-     * @param observer - o elemento observador a ser removido
-     */
-    @Override
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        
-    }
-        
+  
     /**
      * Metodo que muda o estado (ativado/desativado) dos itens do menu que só podem funcionar a partir de 30 vertices
      * @param estado - variavel booleana com o novo estado dos itens de menu
@@ -268,13 +246,11 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch(Exception e){}
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Erro desconhecido!");
+            return;
+        }
         painel.repaint();
-        if (Sistema.getGrafo().getNumVertices() >= 2)
-            estadoBotaoConexao(true);
-        if(Sistema.getGrafo().getNumVertices() >= 30)
-            estadoBotoes(true);
-        
     }//GEN-LAST:event_carregarArquivoActionPerformed
 
     /**
@@ -287,9 +263,13 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         fc.showDialog(this, "Salvar");        
         try {
                 Sistema.salvarArquivo(fc.getSelectedFile().getPath());
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        } 
+        catch(NullPointerException e){
+            return;
+        }
         painel.repaint();        
     }//GEN-LAST:event_salvarArquivoActionPerformed
 
@@ -344,7 +324,7 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
      */
     private void adicionarConexao(Vertice eq1, Vertice eq2)
     {
-        boolean ok = true;
+        boolean ok;
         int peso = 0;
         do {
             try {
@@ -386,47 +366,49 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         }
     }
     private void adicionarConexaoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoMenuItemActionPerformed
-        Vertice v1, v2;
-        if (Sistema.getGrafo().getNumVertices() >= 2) {
-            do {
+        Vertice v1 = null, v2 = null;
+        try 
+        {
+            do 
+            {
                 v1 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Digite o rótulo do primeiro equipamento", "Rótulo", 1).toUpperCase());
                 if (v1 == null) {
                     JOptionPane.showMessageDialog(null, "Equipamento não existente, tente novamente");
                 }
-            } while (v1 == null);
-
+            }   
+            while (v1 == null);
             do {
                 v2 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Digite o rótulo do segundo equipamento", "Rótulo", 1).toUpperCase());
-                if (v2 == null) {
+                if (v2 == null) { 
                     JOptionPane.showMessageDialog(null, "Equipamento não existente, tente novamente");
                 }
-            } while (v2 == null);
-            adicionarConexao(v1, v2);
-            painel.repaint();
-        } else {
-            System.out.println("Adicione mais que 1 equipamento para esta opção funcionar");
+                }
+            while (v2 == null);
+        } 
+        catch (NullPointerException e) 
+        {
+            return;
         }
+        adicionarConexao(v1, v2);
+        painel.repaint();
     }//GEN-LAST:event_adicionarConexaoMenuItemActionPerformed
 
     private void adicionarEquipamentoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarEquipamentoMenuItemActionPerformed
-        Object[] opcoes = {"Roteador", "Computador", "Internet"};   
-        Object[] opcoes1 = {"Computador"}; 
-        if (Sistema.getGrafo().getNumVertices()<2) 
-            painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes1, opcoes[0]));
-        else
+        Object[] opcoes = {"Roteador", "Computador"};   
             painel.adicionarEquipamentoMouse(JOptionPane.showInputDialog(null, "Selecione qual equipamento deseja adicionar", "Adicionar Equipamento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]));        
     }//GEN-LAST:event_adicionarEquipamentoMenuItemActionPerformed
 
     private void removerEquipamentoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerEquipamentoMenuItemActionPerformed
         String nome = JOptionPane.showInputDialog("Informe o nome do componente a ser removido").toUpperCase();                          
         if(Sistema.removerVertice(nome))
-            JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!");        
+            JOptionPane.showMessageDialog(null, nome + " foi removido com sucesso!", "Remoção", 1);  
+        else 
+        {
+            JOptionPane.showMessageDialog(null, "Equipamento não encontrado!", "Remoção", 1);
+            return;
+        }
         painel.removeAll();
         painel.repaint();
-        if(Sistema.getGrafo().getNumVertices() < 2)
-            estadoBotaoConexao(false);
-        if(Sistema.getGrafo().getNumVertices() < 30)
-            estadoBotoes(false);
     }//GEN-LAST:event_removerEquipamentoMenuItemActionPerformed
 
     /**
@@ -438,8 +420,6 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
         painel.removeAll();
         painel.validate();
         painel.repaint(); 
-        estadoBotaoConexao(false);
-        estadoBotoes(false);
     }//GEN-LAST:event_resetarRedeMenuItemActionPerformed
 
     private void menorRotaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menorRotaMenuItemActionPerformed
@@ -559,12 +539,22 @@ public class GUI extends javax.swing.JFrame implements Modelo.Observable, Observ
     private javax.swing.JMenu visualizar;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Muda a diponibilidade do uso de alguns botões de acorodo com o novo 
+     * numero de equipamentos.
+     * @param numEquipamentos - Numero de vertices do grafo.
+     */
     @Override
-    public void update(Object numeroVertices) {
-        if((Integer)numeroVertices >=2)
+    public void update(Object numEquipamentos) {
+        numeroEquipamentos = (Integer) numEquipamentos;
+        if(numeroEquipamentos >=2) 
             estadoBotaoConexao(true);
-        if ((Integer)numeroVertices >=30)
+        else
+            estadoBotaoConexao(false);
+        if (numeroEquipamentos >=30)
             estadoBotoes(true);
+        else
+            estadoBotoes(false);
     }
     
     

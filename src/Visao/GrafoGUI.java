@@ -2,9 +2,6 @@ package Visao;
 
 import Controlador.Sistema;
 import Modelo.Aresta;
-import Modelo.Grafo;
-import Modelo.Observable;
-import Modelo.Observer;
 import Modelo.Vertice;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -22,15 +19,14 @@ import javax.swing.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 /**
- *
+ * Painel onde o grafo pode ser desenhado.
  * @author antony
  */
-public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable {
+public class GrafoGUI extends javax.swing.JPanel{
 
     private int x_novoVertice;
     private int y_novoVertice;
     private boolean clickNoGrafo;
-    private Grafo grafo;
     private JScrollPane scrollPane;
     private JButton adicionarVertice;
     private JLabel grafoLabel;
@@ -43,21 +39,21 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
     private boolean destacarRota = false;
     private List<Vertice> menorRotaVertices;
     private boolean exibirPesos = true;
-    private ArrayList<Observer> observers;
 
     /**
      * Creates new form desenhoGrafo
      */
     public GrafoGUI() {
-        Sistema.getGrafo().registerObserver(this);
         this.setBackground(Color.WHITE);
-        this.grafo = Sistema.getGrafo();
         clickNoGrafo = false;
-        observers = new ArrayList<>();
         initComponents();
         setVisible(true);
     }
 
+    /**
+     * Adiciona um equipamento no painel.
+     * @param tipoEquipamento - Tipo do equipamento a ser adicionado.
+     */
     public void adicionarEquipamentoMouse(Object tipoEquipamento) {
         resposta = tipoEquipamento;
         if (resposta == null) {
@@ -75,19 +71,25 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
                     if (nomeEquipamento == null) {
                         clickNoGrafo = false;
                         return;
-                    } else {
-                        if (grafo.buscarVertice(nomeEquipamento) == null) {
-                            if (resposta.equals("Computador")) {
+                    } 
+                    else {
+                        if (Sistema.getGrafo().buscarVertice(nomeEquipamento) == null) 
+                        {
+                            if (resposta.equals("Computador")) 
+                            {
                                 Sistema.adicionarVertice(nomeEquipamento, true, x_novoVertice, y_novoVertice);
-                            } else {
+                            } 
+                            else 
+                            {
                                 Sistema.adicionarVertice(nomeEquipamento, false, x_novoVertice, y_novoVertice);
                             }
-                            adicionarEquipamento(grafo.buscarVertice(nomeEquipamento));
-                        } else {
+                            adicionarEquipamento(Sistema.getGrafo().buscarVertice(nomeEquipamento));
+                        } 
+                        else 
+                        {
                             JOptionPane.showMessageDialog(null, "Este nome já está sendo utilizado por outro equipamento");
                         }
                     }
-                    notifyObservers();
                     repaint();
                     clickNoGrafo = false;
                 }
@@ -205,6 +207,9 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
         }
     }
 
+    /**
+     *
+     */
     public void calculadorMenorRota() {
         if (primeiroMenorRota && segundoMenorRota) {
             menorRotaVertices = Sistema.menorRotaEntre(primeiroString, segundoString);
@@ -219,6 +224,10 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
         segundoMenorRota = false;
     }
 
+    /**
+     * Desenha o grafo no painel.
+     * @param g
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -232,14 +241,14 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
     }
 
     private void paintGraph(Graphics g) {
-        for (int i = 0; i < grafo.getNumVertices(); i++) {
-            Vertice v = grafo.getVertices().get(i);
+        for (int i = 0; i < Sistema.getGrafo().getNumVertices(); i++) {
+            Vertice v = Sistema.getGrafo().getVertices().get(i);
             adicionarEquipamento(v);
         }
 
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        ArrayList<Aresta> arestas = grafo.getArestas();
+        ArrayList<Aresta> arestas = Sistema.getGrafo().getArestas();
         for (int i = 0; i < arestas.size(); i++) {
             g2d.drawLine(arestas.get(i).getOrigem().getX() + 15, arestas.get(i).getOrigem().getY() + 20,
                     arestas.get(i).getDestino().getX() + 15,
@@ -250,7 +259,7 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
     private void paintMenorRota(Graphics g) {        
         g.setColor(Color.red);
         Graphics2D g2d = (Graphics2D) g.create();
-        g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         for (int i = 0; i < menorRotaVertices.size() - 1; i++) {
             Vertice v1 = menorRotaVertices.get(i);
             Vertice v2 = menorRotaVertices.get(i + 1);            
@@ -260,12 +269,20 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
         destacarRota = false;
     }
 
+    /**
+     *
+     * @param e
+     */
     public void setExibirPeso(boolean e) {
         exibirPesos = e;
     }
 
+    /**
+     *
+     * @param g
+     */
     public void exibirPesos(Graphics g) {
-        ArrayList<Aresta> arestas = grafo.getArestas();
+        ArrayList<Aresta> arestas = Sistema.getGrafo().getArestas();
         g.setColor(Color.getColor("39 64 139"));        
         for (int i = 0; i < arestas.size(); i++) {            
             g.setFont(new Font("default", Font.BOLD, 10));
@@ -297,32 +314,18 @@ public class GrafoGUI extends javax.swing.JPanel implements Observer, Observable
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    @Override
-    public void update(Object grafoAtualizado) {
-        grafo = (Grafo) grafoAtualizado;
-    }
-
-    @Override
-    public void registerObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        for (Observer o : observers) {
-            o.update(Sistema.getGrafo().getNumVertices());
-        }
-    }
-
+    /**
+     *
+     * @param destacarRota
+     */
     public void setDestacarRota(boolean destacarRota) {
         this.destacarRota = destacarRota;
     }
 
+    /**
+     *
+     * @param menorRotaVertices
+     */
     public void setMenorRotaVertices(List<Vertice> menorRotaVertices) {
         this.menorRotaVertices = menorRotaVertices;
     }

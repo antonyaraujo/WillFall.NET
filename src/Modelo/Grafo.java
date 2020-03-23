@@ -265,20 +265,29 @@ public class Grafo implements Observable {
         notifyObservers();
     }
 
+    /**
+     * Metodo que adiciona um observador ao JFrame para ser notificado de possíveis mudancas
+     * @param observer - o elemento observador a ser adicionado
+     */
     @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);
     }
 
+    /**
+     * Metodo que remove um observador ao JFrame para ser notificado de possiveis mudancas
+     * @param observer - o elemento observador a ser removido
+     */
     @Override
     public void removeObserver(Observer observer) {
         observers.remove(observer);
     }
 
+    
     @Override
     public void notifyObservers() {
         for (Observer o : observers) {
-            o.update(this);
+            o.update(getNumVertices());
         }
     }
 

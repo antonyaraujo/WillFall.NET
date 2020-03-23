@@ -17,29 +17,61 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 /**
- *
+ * Classe controladora do sistema.
  * @author antony
  */
 public class Sistema {
+    
     static Grafo rede = new Grafo();
     
+    /**
+     *
+     * @throws IOException
+     */
     public Sistema() throws IOException{        
     }
     
+    /**
+     * Adiciona vertices no grafo.
+     * @param nome - Nome do vertice.
+     * @param terminal - Determina se o vertice é terminal ou nao.
+     * @param x - Localizacao X do vertice na tela.
+     * @param y - Localizacao Y do vertice na tela.
+     */
     public static void adicionarVertice(String nome, boolean terminal, int x, int y)
     {
         rede.adicionarVertice(nome, terminal, x, y);
     }
     
+    /**
+     * Adiciona uma aresta no grafo.
+     * @param inicio -  Vertice que inicia a conexao.
+     * @param destino - Vertice que termina a conexao.
+     * @param peso - O custo da ligacao entre os vertices.
+     * @return boolean - Indica uma conexao bem sucedida.
+     */
     public static boolean adicionarAresta(Vertice inicio, Vertice destino, double peso){                        
         rede.adicionarAresta(inicio, destino, peso);
         return true;
     }
     
+    /**
+     *
+     * @param origem - Vertice de inicio.
+     * @param destino -  Vertice de destino
+     * @return List<Vertice> -  Uma lista de vertices que indicam o melhor
+     * caminho entre os vertices de inicio e destino.
+     */
     public static List<Vertice> melhorCaminho(String origem, String destino){   
         return rede.getCaminhoMaisCurtoEntreVertices(origem, destino);
     }
     
+    /**
+     *
+     * @param arquivo - Arquivo que sera salvo os dados do sistema.
+     * @throws FileNotFoundException - Arquivo nao encontrado.
+     * @throws IOException
+     */
     public static void carregarArquivo(File arquivo) throws FileNotFoundException, IOException{        
         try 
         {     
@@ -57,7 +89,22 @@ public class Sistema {
                     int y = Integer.valueOf(dados[3]);
                     rede.adicionarVertice(dados[0], terminal, x, y);
                 }
-                catch (Exception e) 
+                catch (ArrayIndexOutOfBoundsException e) 
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+                            + "Causa: "+ e.getMessage());
+                }
+                catch(NumberFormatException e)
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+                            + "Causa: "+ e.getMessage() + " não pode ser convertido para o tipo inteiro");
+                }
+                catch (IllegalArgumentException e)
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+                            + "Causa: " + e.getMessage());
+                }
+                catch (Exception e)
                 {
                     System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
                 }
@@ -75,9 +122,24 @@ public class Sistema {
                     if(origem != null && destino != null)
                         rede.adicionarAresta(origem, destino, peso);
                 }
-                catch (Exception e) 
+                catch (ArrayIndexOutOfBoundsException e) 
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar uma conexão!");
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+                            + "Causa: "+ e.getMessage());
+                }
+                catch(NumberFormatException e)
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+                            + "Causa: "+ e.getMessage() + " não pode ser convertido para o tipo double");
+                }
+                catch (IllegalArgumentException e)
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+                            + "Causa: " + e.getMessage());
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
                 }
                 i++;
             }
@@ -90,17 +152,22 @@ public class Sistema {
     }
     
      public static Grafo getGrafo(){
-        return rede;
+         return rede;
     }
 
-     public static JScrollPane identificarMelhorCaminho(String nome){
-         Vertice equipamento = rede.buscarVertice(nome);
-         ArrayList<String> colunas = new ArrayList<String>();
-         for(Vertice v: rede.getVertices()){
-             if(v != equipamento)
-                 colunas.add(v.getNome());
+    /**
+     * Indentifica os melhores caminhos entre um vertice e todos os demais.
+     * @param nome - Nome do vertice a se indentificar os melhores caminhos.
+     * @return JScrollPane - Uma tabela com os melhores caminhos para o vertice
+     * pretendido.
+     */
+    public static JScrollPane identificarMelhorCaminho(String nome){ 
+        Vertice equipamento = rede.buscarVertice(nome);
+        ArrayList<String> colunas = new ArrayList<String>();
+        for(Vertice v: rede.getVertices()){
+           if(v != equipamento)
+               colunas.add(v.getNome());
          }
-        
             JTable tabela = new JTable(rede.matrizMelhorCaminho(equipamento), colunas.toArray());                                    
             tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             tabela.setAutoResizeMode(0);
@@ -108,6 +175,11 @@ public class Sistema {
             return barraRolagem;
      }
      
+    /**
+     * Armazena em um arquivo txt os dados da rede.
+     * @param path - Diretório de onde será salvo o arquivo.
+     * @throws IOException
+     */
     public static void salvarArquivo(String path) throws IOException {
        File arquivo = new File(path);
        String vertices="ROTULO;TERMINAL;COORDENADA_X;COORDENADA_Y\n";
@@ -145,11 +217,19 @@ public class Sistema {
         buffer.close();       
     }
     
+    /**
+     * Remove um vertice do grafo. 
+     * @param nome - Nome do vertice que deve se removido.
+     * @return boolean - True se a remocao foi bem sucedida;False caso não.
+     */
     public static boolean removerVertice(String nome){
         return rede.removerVertice(nome);
         
     }
     
+    /**
+     * Remove todos os vertices do grafo.
+     */
     public static void resetarRede()
     {
         rede.resetar();
