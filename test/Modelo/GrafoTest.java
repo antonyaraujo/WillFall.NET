@@ -71,8 +71,8 @@ public class GrafoTest {
     @Test
     public void testGetVertices() {
         Grafo instance = new Grafo();
-        ArrayList<Vertice> expResult = null;
-        ArrayList<Vertice> result = instance.getVertices();
+        int expResult = 0;
+        int result = instance.getVertices().size();
         assertEquals(expResult, result, "Lista de vertices do grafo apos nao ser"
                 + "adicionado nenhum vertice");
     }
@@ -131,26 +131,13 @@ public class GrafoTest {
         double peso = 0.0;
         Grafo instance = new Grafo();
         instance.adicionarAresta(origem, destino, peso);
-        int expResult = 1;
+        int expResult = 0;
         int result = instance.getArestas().size();
         assertEquals(expResult, result, "Numero de arestas do grafo apos"
-                + "adicionar um aresta.");
+                + "adicionar uma aresta com vertices inexistentes.");
     }
 
 
-
-    /**
-     * Test of getCaminhoMaisCurtoPara method, of class Grafo.
-     */
-    @Test
-    public void testGetCaminhoMaisCurtoPara() {
-        Vertice destino = null;
-        Grafo instance = new Grafo();
-        List<Vertice> expResult = null;
-        List<Vertice> result = instance.getCaminhoMaisCurtoPara(destino);
-        assertEquals(expResult, result, "Caminho mais curto para um vertice não"
-                + "existente.");
-    }
 
     /**
      * Test of getCaminhoMaisCurtoEntreVertices method, of class Grafo.
@@ -165,19 +152,6 @@ public class GrafoTest {
         assertEquals(expResult, result, "Caminho mais curto entre verties inexistentes.");
     }
 
-    /**
-     * Test of matrizMelhorCaminho method, of class Grafo.
-     */
-    @Test
-    public void testMatrizMelhorCaminho() {
-        Vertice vertice = null;
-        Grafo instance = new Grafo();
-        Object[][] expResult = null;
-        Object[][] result = instance.matrizMelhorCaminho(vertice);
-        assertArrayEquals(expResult, result, "Melhores caminhos de um vertice"
-                + "inexistente.");
-        
-    }
 
     /**
      * Test of resetar method, of class Grafo.

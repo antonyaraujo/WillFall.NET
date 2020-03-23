@@ -118,15 +118,17 @@ public class Grafo implements Observable {
      * @param peso - valor da conexao entre origem e destino     
      * @return nao ha retorno
      */
-    public void adicionarAresta(Vertice origem, Vertice destino, double peso) {        
+    public boolean adicionarAresta(Vertice origem, Vertice destino, double peso) {        
         if (origem == null || destino == null) {
-            return;
+            return false;
         }
         Aresta aresta = new Aresta(origem, destino, peso);
         origem.addVizinho(aresta);
         destino.addVizinho(aresta);
         arestas.add(aresta);
         notifyObservers();
+        return true;
+       
     }
 
     /**
@@ -224,6 +226,10 @@ public class Grafo implements Observable {
      * @return lista de vertices com o menor caminho entre origem e destino
      */
     public List<Vertice> getCaminhoMaisCurtoEntreVertices(String Origem, String Destino) {
+        if (buscarVertice(Origem)==null)
+            return null;
+        if (buscarVertice(Destino)==null)
+            return null;
         calcularMenoresDistancias(buscarVertice(Origem));
         return getCaminhoMaisCurtoPara(buscarVertice(Destino));
     }
@@ -234,7 +240,6 @@ public class Grafo implements Observable {
      * @return matriz contendo todos os melhores caminhos entre um vertice e os outros do grafo
      */
     public Object[][] matrizMelhorCaminho(Vertice vertice) {
-        //ArrayList<Vertice> aux = vertices;
         ArrayList<Vertice> aux = new ArrayList<>(vertices);
         aux.remove(vertice);
         Object[][] matriz = new Object[aux.size() / 2][aux.size()];

@@ -36,41 +36,28 @@ public class SistemaTest {
     
     @BeforeEach
     public void setUp() {
+        Sistema.resetarRede();
     }
     
     @AfterEach
     public void tearDown() {
     }
 
-    /**
-     * Test of adicionarVertice method, of class Sistema.
-     */
-    @Test
-    public void testAdicionarVertice() {
-        System.out.println("adicionarVertice");
-        String nome = "";
-        boolean terminal = false;
-        int x = 0;
-        int y = 0;
-        Sistema.adicionarVertice(nome, terminal, x, y);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of adicionarAresta method, of class Sistema.
      */
     @Test
     public void testAdicionarAresta() {
-        System.out.println("adicionarAresta");
         Vertice inicio = null;
         Vertice destino = null;
         double peso = 0.0;
         boolean expResult = false;
         boolean result = Sistema.adicionarAresta(inicio, destino, peso);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult, result,"Adicao de uma aresta entre vertices"
+                + "inexistentes");
+
+  
     }
 
     /**
@@ -78,39 +65,11 @@ public class SistemaTest {
      */
     @Test
     public void testMelhorCaminho() {
-        System.out.println("melhorCaminho");
         String origem = "";
         String destino = "";
         List<Vertice> expResult = null;
         List<Vertice> result = Sistema.melhorCaminho(origem, destino);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of carregarArquivo method, of class Sistema.
-     */
-    @Test
-    public void testCarregarArquivo() throws Exception {
-        System.out.println("carregarArquivo");
-        File arquivo = null;
-        Sistema.carregarArquivo(arquivo);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getGrafo method, of class Sistema.
-     */
-    @Test
-    public void testGetGrafo() {
-        System.out.println("getGrafo");
-        Grafo expResult = null;
-        Grafo result = Sistema.getGrafo();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult, result,"Melhor caminho entre vertices inexistentes");
     }
 
     /**
@@ -118,25 +77,11 @@ public class SistemaTest {
      */
     @Test
     public void testIdentificarMelhorCaminho() {
-        System.out.println("identificarMelhorCaminho");
         String nome = "";
         JScrollPane expResult = null;
         JScrollPane result = Sistema.identificarMelhorCaminho(nome);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of salvarArquivo method, of class Sistema.
-     */
-    @Test
-    public void testSalvarArquivo() throws Exception {
-        System.out.println("salvarArquivo");
-        String path = "";
-        Sistema.salvarArquivo(path);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -144,13 +89,10 @@ public class SistemaTest {
      */
     @Test
     public void testRemoverVertice() {
-        System.out.println("removerVertice");
         String nome = "";
         boolean expResult = false;
         boolean result = Sistema.removerVertice(nome);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult, result, "Condicao de uma remocao bem sucedida");
     }
 
     /**
@@ -158,10 +100,12 @@ public class SistemaTest {
      */
     @Test
     public void testResetarRede() {
-        System.out.println("resetarRede");
         Sistema.resetarRede();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int expResult = 0;
+        int result = Sistema.getGrafo().getNumVertices();
+        assertEquals(expResult, result, "Numero de equipamentos apos"
+                + " resetar a rede.");
+
     }
 
     /**
@@ -169,14 +113,12 @@ public class SistemaTest {
      */
     @Test
     public void testMenorRotaEntre() {
-        System.out.println("menorRotaEntre");
         String origem = "";
         String destino = "";
         List<Vertice> expResult = null;
         List<Vertice> result = Sistema.menorRotaEntre(origem, destino);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult, result, "Menor rota entre equipamentos "
+                + " inexistentes");
     }
 
     /**
@@ -184,14 +126,11 @@ public class SistemaTest {
      */
     @Test
     public void testCalcularCoordenadasEuclidianas() {
-        System.out.println("calcularCoordenadasEuclidianas");
         String equipamento1 = "";
         String equipamento2 = "";
-        double expResult = 0.0;
+        double expResult = -1;
         double result = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult, result, "Distancia entre equipamentos inexistentes");
     }
     
 }

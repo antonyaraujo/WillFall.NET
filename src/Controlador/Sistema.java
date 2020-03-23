@@ -51,8 +51,7 @@ public class Sistema {
      * @return boolean - Indica uma conexao bem sucedida.
      */
     public static boolean adicionarAresta(Vertice inicio, Vertice destino, double peso){                        
-        rede.adicionarAresta(inicio, destino, peso);
-        return true;
+        return rede.adicionarAresta(inicio, destino, peso);
     }
     
     /**
@@ -163,6 +162,8 @@ public class Sistema {
      */
     public static JScrollPane identificarMelhorCaminho(String nome){ 
         Vertice equipamento = rede.buscarVertice(nome);
+        if (equipamento==null)
+            return null;
         ArrayList<String> colunas = new ArrayList<String>();
         for(Vertice v: rede.getVertices()){
            if(v != equipamento)
@@ -254,11 +255,10 @@ public class Sistema {
      */
     public static double calcularCoordenadasEuclidianas(String equipamento1, String equipamento2){
         Vertice v1 = rede.buscarVertice(equipamento1);
-        // Verifica se o equipamento 1 existe
-        if (v1 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento1);        
+       
+               
         Vertice v2 = rede.buscarVertice(equipamento2);
         // Verifica se o equipamento 2 existe
-        if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
         if(v1 != null && v2 != null)            
             return Math.sqrt(Math.pow((v1.getX()-v2.getX()), 2.0) + Math.pow((v1.getY()-v2.getY()), 2.0));
         return -1;

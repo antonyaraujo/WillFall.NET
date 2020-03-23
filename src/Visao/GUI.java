@@ -460,7 +460,14 @@ public class GUI extends javax.swing.JFrame implements Observer{
 
     private void distanciaEuclidianaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distanciaEuclidianaMenuItemActionPerformed
         String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A").toUpperCase();
+         // Verifica se o equipamento 1 existe
+        Vertice v1 = Sistema.getGrafo().buscarVertice(equipamento1);
+        if (v1 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento1);
         String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B").toUpperCase();
+         // Verifica se o equipamento 2 existe
+        Vertice v2 = Sistema.getGrafo().buscarVertice(equipamento2);
+        if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
+        
         double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
         
         if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
