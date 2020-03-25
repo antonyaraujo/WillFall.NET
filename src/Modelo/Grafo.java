@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author antony
+ * @author Anderson e  Antony
  */
 public class Grafo implements Observable {
 
@@ -183,10 +183,9 @@ public class Grafo implements Observable {
 
         while (!filaPrioridade.isEmpty()) {
             Vertice vertex = filaPrioridade.poll();
-
             for (Aresta aresta : vertex.getArestas()) {
                 Vertice v = aresta.getDestino();
-                //Vertice u = edge.getStartVertice();
+                
                 double weight = aresta.getPeso();
                 double minDistance = vertex.getDistanciaMinima() + weight;
 

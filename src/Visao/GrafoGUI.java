@@ -278,7 +278,7 @@ public class GrafoGUI extends javax.swing.JPanel{
     }
 
     /**
-     *
+     * Desenha os pesos das arestas do grafo.
      * @param g
      */
     public void exibirPesos(Graphics g) {
@@ -329,6 +329,8 @@ public class GrafoGUI extends javax.swing.JPanel{
     public void setMenorRotaVertices(List<Vertice> menorRotaVertices) {
         this.menorRotaVertices = menorRotaVertices;
     }
+    
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
