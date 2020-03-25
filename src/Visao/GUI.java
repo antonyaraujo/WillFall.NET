@@ -325,22 +325,30 @@ public class GUI extends javax.swing.JFrame implements Observer{
     private void adicionarConexao(Vertice eq1, Vertice eq2)
     {
         boolean ok;
+        String entrada = null;
         int peso = 0;
         do {
-            try {
-                peso = (Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o peso da conexão", null)));
+            try {                
+                entrada = JOptionPane.showInputDialog(null, "Digite o peso da conexão", null);                
+                peso = Integer.parseInt(entrada);
                 ok = true;
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Digite um valor de peso válido");
-                ok = false;
+                if (entrada == null)
+                    ok = true;                    
+                 else{
+                    ok = false;
+                    JOptionPane.showMessageDialog(null, "Digite um valor de peso válido");                
+                }
             }
         } while (!ok);
 
-        int opcao = JOptionPane.showConfirmDialog(null, "A conexão deve ser bidirecional?", "Bidirecionalidade", JOptionPane.YES_NO_OPTION);
-        if (opcao == JOptionPane.NO_OPTION) {
-            Sistema.adicionarAresta(eq1, eq2, peso);
-            painel.repaint();
-            /*if(!eq1.isTerminal() && eq2.getArestas().size() - 1 ==0)
+        if(entrada != null){
+            int opcao = JOptionPane.showConfirmDialog(null, "A conexão deve ser bidirecional?", "Bidirecionalidade", JOptionPane.YES_NO_OPTION);
+            if (opcao == JOptionPane.NO_OPTION) {
+                Sistema.adicionarAresta(eq1, eq2, peso);
+                painel.repaint();
+
+                /*if(!eq1.isTerminal() && eq2.getArestas().size() - 1 ==0)
             {
                 Vertice eq3 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Informe um equipamento para encaminhar pacotes de dados para o equipamento "
                         + eq1, "Equipamento", 1).toUpperCase());
@@ -353,16 +361,17 @@ public class GUI extends javax.swing.JFrame implements Observer{
                 Vertice eq4 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase());
                 adicionarConexao(eq2, eq4);
             }*/
-        }
-        if (opcao == JOptionPane.YES_OPTION) {
-            Sistema.adicionarAresta(eq1, eq2, peso);
-            Sistema.adicionarAresta(eq2, eq1, peso);
-            painel.repaint();
-            /* if(!eq2.isTerminal() && eq2.getArestas().size() - 2 ==0)
+            }
+            if (opcao == JOptionPane.YES_OPTION) {
+                Sistema.adicionarAresta(eq1, eq2, peso);
+                Sistema.adicionarAresta(eq2, eq1, peso);
+                painel.repaint();
+                /* if(!eq2.isTerminal() && eq2.getArestas().size() - 2 ==0)
             {
                 Vertice eq3 = Sistema.getGrafo().buscarVertice(JOptionPane.showInputDialog(null, "Informe um equipamento para o roteador " + eq2 + " encaminhar os pacotes de dados", "Equipamento", 1).toUpperCase());
                 adicionarConexao(eq2, eq3);
             }*/
+            }
         }
     }
     private void adicionarConexaoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarConexaoMenuItemActionPerformed

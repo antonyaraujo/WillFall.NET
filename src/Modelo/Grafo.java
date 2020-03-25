@@ -242,8 +242,8 @@ public class Grafo implements Observable {
     public Object[][] matrizMelhorCaminho(Vertice vertice) {
         ArrayList<Vertice> aux = new ArrayList<>(vertices);
         aux.remove(vertice);
-        Object[][] matriz = new Object[aux.size() / 2][aux.size()];
-        for (int linha = 0; linha < aux.size() / 2; linha++) {
+        Object[][] matriz = new Object[aux.size()][aux.size()];
+        for (int linha = 0; linha < aux.size(); linha++) {
             for (int coluna = 0; coluna < aux.size(); coluna++) {
                 this.calcularMenoresDistancias(vertice);
                 List<Vertice> caminho = getCaminhoMaisCurtoPara(aux.get(coluna));
