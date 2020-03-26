@@ -87,6 +87,7 @@ public class GUI extends javax.swing.JFrame implements Observer{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ContEquipLabel = new javax.swing.JLabel();
         barraMenu = new javax.swing.JMenuBar();
         arquivo = new javax.swing.JMenu();
         carregarArquivo = new javax.swing.JMenuItem();
@@ -107,6 +108,8 @@ public class GUI extends javax.swing.JFrame implements Observer{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WillFall.NET");
         setResizable(false);
+
+        ContEquipLabel.setText("Nº de equipamentos na rede: 0");
 
         arquivo.setText("Arquivo");
 
@@ -129,6 +132,11 @@ public class GUI extends javax.swing.JFrame implements Observer{
         barraMenu.add(arquivo);
 
         visualizar.setText("Visualizar");
+        visualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visualizarActionPerformed(evt);
+            }
+        });
 
         exibirPesos.setSelected(true);
         exibirPesos.setText("Exibir pesos");
@@ -219,11 +227,17 @@ public class GUI extends javax.swing.JFrame implements Observer{
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 635, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(475, Short.MAX_VALUE)
+                .addComponent(ContEquipLabel)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ContEquipLabel)
+                .addContainerGap(583, Short.MAX_VALUE))
         );
 
         pack();
@@ -272,19 +286,6 @@ public class GUI extends javax.swing.JFrame implements Observer{
         }
         painel.repaint();        
     }//GEN-LAST:event_salvarArquivoActionPerformed
-
-    /**
-     * Metodo que verifica se o item de Menu exibirPesos esta ativado ou desativado
-     * e a partir disso esconde ou mostra os pesos das conexoes do grafo
-     * @param evt 
-     */
-    private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
-        if(!exibirPesos.isSelected())
-            painel.setExibirPeso(false);
-        if (exibirPesos.isSelected())
-            painel.setExibirPeso(true);
-        painel.repaint();
-    }//GEN-LAST:event_exibirPesosActionPerformed
 
     /**
      * Exibe detalhes do desenvolvimento do programa
@@ -431,15 +432,46 @@ public class GUI extends javax.swing.JFrame implements Observer{
         painel.repaint(); 
     }//GEN-LAST:event_resetarRedeMenuItemActionPerformed
 
+    private void visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizarActionPerformed
+
+    }//GEN-LAST:event_visualizarActionPerformed
+
+    private void caminhosMenosCustososMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_caminhosMenosCustososMenuItemActionPerformed
+        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó").toUpperCase();
+        JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(computador);
+        JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
+        exibir.add(barraRolagem);
+        exibir.setSize(600, 200);
+        exibir.setVisible(true);
+        exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        exibir.setLocationRelativeTo(null);
+    }//GEN-LAST:event_caminhosMenosCustososMenuItemActionPerformed
+
+    private void distanciaEuclidianaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distanciaEuclidianaMenuItemActionPerformed
+        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A").toUpperCase();
+        // Verifica se o equipamento 1 existe
+        Vertice v1 = Sistema.getGrafo().buscarVertice(equipamento1);
+        if (v1 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento1);
+        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B").toUpperCase();
+        // Verifica se o equipamento 2 existe
+        Vertice v2 = Sistema.getGrafo().buscarVertice(equipamento2);
+        if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
+
+        double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
+
+        if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " +
+            equipamento1 + " e " + equipamento2 + " é: \n" + String.format("%.5f", valor));
+    }//GEN-LAST:event_distanciaEuclidianaMenuItemActionPerformed
+
     private void menorRotaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menorRotaMenuItemActionPerformed
         String origem = JOptionPane.showInputDialog("Digite o rótulo do terminal de partida").toUpperCase();
-        try 
+        try
         {
-            if(!Sistema.getGrafo().buscarVertice(origem).isTerminal()) 
+            if(!Sistema.getGrafo().buscarVertice(origem).isTerminal())
             {
-            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
-            return;
-            } 
+                JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
+                return;
+            }
         }
         catch(NullPointerException e)
         {
@@ -447,14 +479,14 @@ public class GUI extends javax.swing.JFrame implements Observer{
             return;
         }
         String destino = JOptionPane.showInputDialog("Digite o rótulo do terminal de destino").toUpperCase();
-        try 
+        try
         {
             if(!Sistema.getGrafo().buscarVertice(destino).isTerminal())
             {
-            JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
+                JOptionPane.showMessageDialog(null, "Esse equipamento não é um terminal!");
             }
-        } 
-        catch (NullPointerException e) 
+        }
+        catch (NullPointerException e)
         {
             JOptionPane.showMessageDialog(null, "Equipamento " + destino + " não encontrado!");
             return;
@@ -463,36 +495,22 @@ public class GUI extends javax.swing.JFrame implements Observer{
         painel.setDestacarRota(true);
         painel.repaint();
         JOptionPane.showMessageDialog(null, "A menor rota entre " + origem + "e " + destino + " está destacada no grafo"
-                + "\nRota: "+Sistema.menorRotaEntre(origem, destino)+"\nPressione OK para não destacar mais a rota");
+            + "\nRota: "+Sistema.menorRotaEntre(origem, destino)+"\nPressione OK para não destacar mais a rota");
         painel.repaint();
     }//GEN-LAST:event_menorRotaMenuItemActionPerformed
 
-    private void distanciaEuclidianaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distanciaEuclidianaMenuItemActionPerformed
-        String equipamento1 = JOptionPane.showInputDialog("Informe o nome do equipamento A").toUpperCase();
-         // Verifica se o equipamento 1 existe
-        Vertice v1 = Sistema.getGrafo().buscarVertice(equipamento1);
-        if (v1 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento1);
-        String equipamento2 = JOptionPane.showInputDialog("Informe o nome do equipamento B").toUpperCase();
-         // Verifica se o equipamento 2 existe
-        Vertice v2 = Sistema.getGrafo().buscarVertice(equipamento2);
-        if (v2 == null) JOptionPane.showMessageDialog(null, "Não existe equipamento com o nome de " + equipamento2);
-        
-        double valor = Sistema.calcularCoordenadasEuclidianas(equipamento1, equipamento2);
-        
-        if(valor != -1) JOptionPane.showMessageDialog(null, "A distância euclidiana entre " + 
-                equipamento1 + " e " + equipamento2 + " é: \n" + String.format("%.5f", valor));
-    }//GEN-LAST:event_distanciaEuclidianaMenuItemActionPerformed
-
-    private void caminhosMenosCustososMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_caminhosMenosCustososMenuItemActionPerformed
-        String computador = JOptionPane.showInputDialog(null, "Informe o nome do nó").toUpperCase();
-        JScrollPane barraRolagem = Sistema.identificarMelhorCaminho(computador);
-        JFrame exibir = new JFrame("Caminhos menos custosos do " + computador);
-        exibir.add(barraRolagem);                
-        exibir.setSize(600, 200);
-        exibir.setVisible(true);        
-        exibir.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        exibir.setLocationRelativeTo(null);
-    }//GEN-LAST:event_caminhosMenosCustososMenuItemActionPerformed
+    /**
+     * Metodo que verifica se o item de Menu exibirPesos esta ativado ou desativado
+     * e a partir disso esconde ou mostra os pesos das conexoes do grafo
+     * @param evt 
+     */
+    private void exibirPesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exibirPesosActionPerformed
+        if(!exibirPesos.isSelected())
+        painel.setExibirPeso(false);
+        if (exibirPesos.isSelected())
+        painel.setExibirPeso(true);
+        painel.repaint();
+    }//GEN-LAST:event_exibirPesosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -537,6 +555,7 @@ public class GUI extends javax.swing.JFrame implements Observer{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ContEquipLabel;
     private javax.swing.JMenuItem adicionarConexaoMenuItem;
     private javax.swing.JMenuItem adicionarEquipamentoMenuItem;
     private javax.swing.JMenu arquivo;
@@ -571,6 +590,7 @@ public class GUI extends javax.swing.JFrame implements Observer{
             estadoBotoes(true);
         else
             estadoBotoes(false);
+        ContEquipLabel.setText("Nº de equipamentos na rede: " + numeroEquipamentos);
     }
     
     

@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author antony
+ * @author Anderson e  Antony
  */
 public class Grafo implements Observable {
 
