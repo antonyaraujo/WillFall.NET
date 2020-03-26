@@ -183,13 +183,10 @@ public class Grafo implements Observable {
 
         while (!filaPrioridade.isEmpty()) {
             Vertice vertex = filaPrioridade.poll();
-
             for (Aresta aresta : vertex.getArestas()) {
-                Vertice v = aresta.getDestino();
-                //Vertice u = edge.getStartVertice();
-                double weight = aresta.getPeso();
-                double minDistance = vertex.getDistanciaMinima() + weight;
-
+                Vertice v = aresta.getDestino();               
+                double peso = aresta.getPeso();
+                double minDistance = vertex.getDistanciaMinima() + peso;
                 if (minDistance < v.getDistanciaMinima()) {
                     filaPrioridade.remove(vertex);
                     v.setAnterior(vertex);
