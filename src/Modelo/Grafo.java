@@ -80,7 +80,6 @@ public class Grafo implements Observable {
      * @param terminal - identifica se e um computador (true) ou nao (false)
      * @param x - posicao x do vertice na tela
      * @param y - posicao y do vertice na tela
-     * @return nao ha retorno
      */
     public void adicionarVertice(String nome, boolean terminal, int x, int y) {
         if (buscarVertice(nome) == null) // Se nao existir vertice com o nome passado, o vertice pode ser criado

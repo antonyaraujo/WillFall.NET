@@ -58,7 +58,7 @@ public class Sistema {
      *
      * @param origem - Vertice de inicio.
      * @param destino -  Vertice de destino
-     * @return List<Vertice> -  Uma lista de vertices que indicam o melhor
+     * @return List -  Uma lista de vertices que indicam o melhor
      * caminho entre os vertices de inicio e destino.
      */
     public static List<Vertice> melhorCaminho(String origem, String destino){   
@@ -90,22 +90,22 @@ public class Sistema {
                 }
                 catch (ArrayIndexOutOfBoundsException e) 
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
-                            + "Causa: "+ e.getMessage());
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+//                            + "Causa: "+ e.getMessage());
                 }
                 catch(NumberFormatException e)
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
-                            + "Causa: "+ e.getMessage() + " não pode ser convertido para o tipo inteiro");
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+//                            + "Causa: "+ e.getMessage() + " não pode ser convertido para o tipo inteiro");
                 }
                 catch (IllegalArgumentException e)
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
-                            + "Causa: " + e.getMessage());
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+//                            + "Causa: " + e.getMessage());
                 }
                 catch (Exception e)
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
                 }
                 i++;
             }
@@ -123,22 +123,22 @@ public class Sistema {
                 }
                 catch (ArrayIndexOutOfBoundsException e) 
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
-                            + "Causa: "+ e.getMessage());
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+//                            + "Causa: "+ e.getMessage());
                 }
                 catch(NumberFormatException e)
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
-                            + "Causa: "+ e.getMessage() + " não pode ser convertido para o tipo double");
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+//                            + "Causa: "+ e.getMessage() + " não pode ser convertido para o tipo double");
                 }
                 catch (IllegalArgumentException e)
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
-                            + "Causa: " + e.getMessage());
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!\n"
+//                            + "Causa: " + e.getMessage());
                 }
                 catch (Exception e)
                 {
-                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
+//                    System.out.println("Formatação inválida na linha " + i + " ao adicionar um equipamento!");
                 }
                 i++;
             }
